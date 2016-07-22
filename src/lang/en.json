@@ -1,0 +1,9 @@
+{
+  "page": {
+    "home": "Home",
+    "movies": "Movies",
+    "tvshows": "TV Shows",
+    "music": "Music",
+    "settings": "Settings"
+  }
+}
