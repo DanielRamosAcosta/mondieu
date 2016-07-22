@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, IndexRoute, hashHistory } from 'react-router'
+import { Router, Route, IndexRoute, hashHistory, browserHistory } from 'react-router'
 
 import Layout from './pages/Layout'
 
@@ -16,6 +16,7 @@ import '../styles/common'
 const app = document.getElementById('app')
 
 ReactDOM.render(
+  // TODO: see if we can switch to browserHistory
   <Router history={hashHistory}>
     <Route path='/' component={Layout}>
       <IndexRoute component={Home} />
