@@ -27,23 +27,3 @@ ReactDOM.render(
     </Route>
   </Router>,
 app)
-
-/*
-
-var exampleSocket = new WebSocket("ws://localhost");
-
-exampleSocket.onmessage = function (event) {
-  // Capturar un evento
-  console.log(event.data);
-}
-
-exampleSocket.onopen = function (event) {
-  // Enviar una petición
-  exampleSocket.send(JSON.stringify({
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "VideoLibrary.GetMovies"
-  }))
-}
-
-*/

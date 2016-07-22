@@ -1,6 +1,10 @@
 import React from 'react'
 
-export default class Studies extends React.Component {
+export default class Movies extends React.Component {
+  constructor () {
+    super()
+  }
+
   render () {
     return (
       <div>

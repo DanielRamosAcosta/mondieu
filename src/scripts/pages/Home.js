@@ -5,7 +5,6 @@ import LangStore from '../stores/LangStore'
 export default class Home extends React.Component {
   constructor () {
     super()
-    this.profileImage = 'http://placehold.it/800x800'
 
     this.getLang = this.getLang.bind(this)
     this.state = {
