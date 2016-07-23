@@ -3,6 +3,7 @@ const spawn = require('child_process').spawn
 const del = require('del')
 const zip = require('gulp-zip')
 const standard = require('gulp-standard')
+var mkdirp = require('mkdirp')
 
 // Requerirlo para que salte el error si no se hizo npm install
 require('webpack')
@@ -20,18 +21,28 @@ gulp.task('build', ['clean'], (cb) => {
 })
 
 gulp.task('copyfiles', ['build'], () => {
-  return gulp.src('./addon/*')
-  .pipe(gulp.dest('./dist'))
+  return gulp.src([
+    './addon/*',
+    './LICENSE.txt',
+    './README.md',
+  ])
+  .pipe(gulp.dest('./webinterface.mondieu'))
 })
 
-gulp.task('compress', ['copyfiles'], () => {
-  return gulp.src('dist/*')
-  .pipe(zip('webinterface.mondieu.zip'))
-  .pipe(gulp.dest('dist'))
+gulp.task('compress', ['copyfiles'], (cb) => {
+  mkdirp('./dist', function(err) {
+    spawn('zip', [
+      '-0',
+      '-r',
+      './dist/webinterface.mondieu.zip',
+      './webinterface.mondieu/'
+    ], {stdio: 'inherit'})
+    .on('exit', cb)
+  })
 })
 
 gulp.task('cleanBuild', ['compress'], (cb) => {
-  return del(['dist/**/*', '!dist/*.zip'], cb)
+  return del(['webinterface.mondieu'], cb)
 })
 
 gulp.task('serve', ['clean'], (cb) => {
@@ -53,7 +64,7 @@ gulp.task('serve', ['clean'], (cb) => {
 })
 
 gulp.task('clean', () => {
-  return del(['dist/**/*'])
+  return del(['dist/*'])
 })
 
 gulp.task('lint', function () {

@@ -46,7 +46,7 @@ module.exports = {
     ]
   },
   output: {
-    path: path.join(__dirname, '/dist'),
+    path: path.join(__dirname, '/webinterface.mondieu'),
     filename: 'main.js'
   },
   plugins: debug ? [].concat(commonPlugins) : [

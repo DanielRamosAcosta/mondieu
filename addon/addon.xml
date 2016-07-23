@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <addon
 	id="webinterface.mondieu"
 	version="0.1.0"
@@ -13,11 +13,11 @@
 		<source>https://github.com/DanielRamosAcosta/mondieu</source>
 
 		<summary lang="en">
-			A SPA web interface for Kodi
+			SPA web interface for Kodi
 		</summary>
 
 		<description lang="en">
-			A long description.
+			SPA web interface for Kodi
 		</description>
 
 	</extension>
