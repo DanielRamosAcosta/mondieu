@@ -1,68 +1,83 @@
 import React from 'react'
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
+import { Navbar, Nav, NavItem, Col } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 
-import * as MovieActions from '../../actions/controlActions'
+import * as ControlActions from '../../actions/controlActions'
 import MovieStore from '../../stores/ControlStore'
+import Timebar from '../PlayControls/Timebar.js'
 
+import '../../../styles/_playControls.sass'
 
 export default class Menu extends React.Component {
   constructor () {
     super()
 
     this.state = {
-      played: MovieStore.isPlay(),
-      paused: MovieStore.isPause()
+      playing: MovieStore.isPlaying(),
+      paused: MovieStore.isPaused(),
+      stopped: MovieStore.isStopped(),
+      timebar: 0
     }
   }
 
-  getPlayPause () {
-    console.log('Me han cambiado el play/pause')
+  updateControls () {
     this.setState({
-      played: MovieStore.isPlay(),
-      paused: MovieStore.isPause()
+      playing: MovieStore.isPlaying(),
+      paused: MovieStore.isPaused(),
+      stopped: MovieStore.isStopped()
     })
-    console.log(this.getIcon())
   }
 
   componentWillMount () {
-    MovieStore.on('change', this.getPlayPause.bind(this))
+    MovieStore.on('playerChanged', this.updateControls.bind(this))
   }
 
   componentWillUnmount () {
-    MovieStore.removeListener('change', this.getPlayPause.bind(this))
+    MovieStore.removeListener('playerChanged', this.updateControls.bind(this))
   }
 
   conmutePlayPause () {
-    if (this.state.played === true) {
-      MovieActions.putPause()
+    if (this.state.playing === true) {
+      ControlActions.putPause()
     } else {
-      MovieActions.putPlay()
+      ControlActions.putPlay()
+    }
+  }
+
+  stop () {
+    console.log(this.state.stopped)
+    if (!this.state.stopped) {
+      ControlActions.putStop()
     }
   }
 
   getIcon () {
-    if (this.state.played !== true) {
-      return 'play'
-    } else {
+    if (this.state.playing === true) {
       return 'pause'
+    } else {
+      return 'play'
     }
+  }
+
+  changeTimebar (event) {
+    this.setState({timebar: event.target.value})
   }
 
   render () {
     return (
       <Navbar fixedBottom>
-        <Navbar.Header>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav>
+        <Col xs={12} sm={3}>
+          <ul class='playControls'>
             <NavItem eventKey={1} href='#'><Icon name='step-backward' /></NavItem>
             <NavItem eventKey={2} onClick={this.conmutePlayPause.bind(this)} ><Icon name={this.getIcon()} /></NavItem>
-            <NavItem eventKey={3} href='#'><Icon name='step-forward' /></NavItem>
-          </Nav>
-        </Navbar.Collapse>
+            <NavItem eventKey={2} onClick={this.stop.bind(this)} ><Icon name='stop' /></NavItem>
+            <NavItem eventKey={4} href='#'><Icon name='step-forward' /></NavItem>
+          </ul>
+        </Col>
+        <Col xs={12} sm={9}>
+          <Timebar value={this.state.timebar} min={0} max={100} handleChange={this.changeTimebar.bind(this)}/>
+        </Col>
       </Navbar>
     )
   }

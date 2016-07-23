@@ -11,13 +11,14 @@ import TVShows from './pages/TVShows'
 import Settings from './pages/Settings'
 
 import '../styles/Bootstrap'
+import 'font-awesome/css/font-awesome.css'
 import '../styles/common'
 
 const app = document.getElementById('app')
 
 ReactDOM.render(
   // TODO: see if we can switch to browserHistory
-  <Router history={hashHistory}>
+  <Router history={browserHistory}>
     <Route path='/' component={Layout}>
       <IndexRoute component={Home} />
       <Route path='home' name='home' component={Home} />

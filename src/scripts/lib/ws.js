@@ -4,6 +4,7 @@ export default class WebSck {
     this.events = {}
 
     this.socket.onmessage = this.chop.bind(this)
+    this.id = 1
 
     this.promise = null
   }
@@ -15,7 +16,7 @@ export default class WebSck {
   send (method, params) {
     let data = {
       jsonrpc: '2.0',
-      id: 1,
+      id: this.id,
       method: method,
       params: params || {}
     }
@@ -26,22 +27,26 @@ export default class WebSck {
     } else {
       this.socket.send(JSON.stringify(data))
     }
-    return new Promise((resolve, reject) => {
-      this.promise = { resolve, reject }
-      // After 3 secs without reponse, reject the promise
-      setTimeout(() => {
-        this.promise.reject()
-      }, 3000)
+    this.id++
+  }
+
+  sendAnd (method, params) {
+    return new Promise((res, rej) => {
+      this.promise = { res, rej }
+      this.send(method, params)
     })
   }
 
   chop ({ data }) {
-    let {method, params, result} = JSON.parse(data)
-    if (result) {
-      this.promise.resolve(result)
+    data = JSON.parse(data)
+    if (this.promise) {
+      this.promise.res(data)
+      this.promise = null
       return
     }
-    // En caso de que no sea una respuesta, sino una notificación, usar el metodo adecuado
+    let { method, params, result } = data
+    // TODO: Borrar estos console.log
+    console.log(method)
     if (this.events[method]) {
       this.events[method](params)
     }
