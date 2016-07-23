@@ -10,14 +10,12 @@ class ControlStore extends EventEmitter {
     super()
 
     this.ws = new WebSocket('localhost')
-    this.play = false
-    this.playing = false
-    this.paused = false
-    this.stopped = false
 
-    this.ws.on('Player.OnPlay', ControlActions.putPlay)
-    this.ws.on('Player.OnPause', ControlActions.putPause)
-    this.ws.on('Player.OnStop', ControlActions.putStop)
+    this.ws.on('Player.OnPlay', ControlActions.kodi.putPlay)
+    this.ws.on('Player.OnPause', ControlActions.kodi.putPause)
+    this.ws.on('Player.OnStop', ControlActions.kodi.putStop)
+    this.ws.on('Player.OnSeek', ControlActions.kodi.changeTime)
+    this.ws.on('Playlist.OnAdd', ControlActions.kodi.addToPlaylist)
 
     // Figure out if player is stopped, playing something or paused
     this.ws.sendAnd('Player.GetActivePlayers').then(({ result }) => {
@@ -33,15 +31,15 @@ class ControlStore extends EventEmitter {
           }).then((BTime) => {
             BTime = BTime.result.time
             if ((ATime.seconds === BTime.seconds) && (ATime.milliseconds === BTime.milliseconds)) {
-              this.paused = true
+              this.pause()
             } else {
-              this.playing = true
+              this.play()
             }
             this.emit('playerChanged')
           })
         })
       } else {
-        this.stopped = true
+        this.stop()
       }
     })
   }
@@ -58,39 +56,71 @@ class ControlStore extends EventEmitter {
     return this.stopped
   }
 
+  pause () {
+    this.playing = false
+    this.paused = true
+    this.stopped = false
+  }
+
+  play () {
+    this.playing = true
+    this.paused = false
+    this.stopped = false
+  }
+
+  stop () {
+    this.playing = false
+    this.paused = false
+    this.stopped = true
+  }
+
   handleActions (action) {
     switch (action.type) {
-      case 'PLAYER_PAUSE': {
-        if (!action.params) {
-          this.ws.send('Input.ExecuteAction', {action: 'pause'})
-          return
-        }
-        this.playing = false
-        this.paused = true
-        this.stopped = false
+      case 'KODI_PLAYER_PAUSE': {
+        this.pause()
         this.emit('playerChanged')
+        break
+      }
+      case 'KODI_PLAYER_PLAY': {
+        this.play()
+        this.emit('playerChanged')
+        break
+      }
+      case 'KODI_PLAYER_STOP': {
+        this.stop()
+        this.emit('playerChanged')
+        break
+      }
+      case 'KODI_PLAYER_CHANGETIME': {
+        console.log(action.params)
+        this.emit('playerTimeChanged')
+        break
+      }
+      case 'KODI_PLAYER_ADDTOPLAYLIST': {
+        console.log(action.params)
+        this.emit('playerNewItem')
+        break
+      }
+      case 'PLAYER_PAUSE': {
+        this.ws.send('Input.ExecuteAction', {action: 'pause'})
         break
       }
       case 'PLAYER_PLAY': {
-        if (!action.params) {
-          this.ws.send('Input.ExecuteAction', {action: 'play'})
-          return
-        }
-        this.playing = true
-        this.paused = false
-        this.stopped = false
-        this.emit('playerChanged')
+        this.ws.send('Input.ExecuteAction', {action: 'play'})
         break
       }
       case 'PLAYER_STOP': {
-        if (!action.params) {
-          this.ws.send('Input.ExecuteAction', {action: 'stop'})
-          return
-        }
-        this.playing = false
-        this.paused = false
-        this.stopped = true
-        this.emit('playerChanged')
+        this.ws.send('Input.ExecuteAction', {action: 'stop'})
+        break
+      }
+      case 'PLAYER_CHANGETIME': {
+        // this.ws.send(...)
+        // Send to kodi to change the time
+        break
+      }
+      case 'PLAYER_ADDTOPLAYLIST': {
+        // this.ws.send(...)
+        // Send to kodi to change the time
         break
       }
     }
