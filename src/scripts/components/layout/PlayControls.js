@@ -4,7 +4,7 @@ import { Navbar, Nav, NavItem, Col } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 
 import * as ControlActions from '../../actions/controlActions'
-import MovieStore from '../../stores/ControlStore'
+import ControlStore from '../../stores/ControlStore'
 import Timebar from '../PlayControls/Timebar.js'
 
 import '../../../styles/_playControls.sass'
@@ -13,28 +13,45 @@ export default class Menu extends React.Component {
   constructor () {
     super()
 
+    this.totalBar = 2000
+
     this.state = {
-      playing: MovieStore.isPlaying(),
-      paused: MovieStore.isPaused(),
-      stopped: MovieStore.isStopped(),
+      playing: ControlStore.isPlaying(),
+      paused: ControlStore.isPaused(),
+      stopped: ControlStore.isStopped(),
       timebar: 0
     }
   }
 
   updateControls () {
     this.setState({
-      playing: MovieStore.isPlaying(),
-      paused: MovieStore.isPaused(),
-      stopped: MovieStore.isStopped()
+      playing: ControlStore.isPlaying(),
+      paused: ControlStore.isPaused(),
+      stopped: ControlStore.isStopped()
+    })
+  }
+
+  updateTimebar () {
+    let time = ControlStore.getCurrentPlayTime()
+    let max = new Date(0, 0, 0, 0, 5, 0, 0)
+    let base = new Date(0, 0, 0, 0, 0, 0, 0)
+    let currentMS = time - base
+    let maxMS = max - base
+    this.setState({
+      timebar: Math.floor((currentMS * this.totalBar) / maxMS)
     })
   }
 
   componentWillMount () {
-    MovieStore.on('playerChanged', this.updateControls.bind(this))
+    ControlStore.on('playerChanged', this.updateControls.bind(this))
+    ControlStore.on('playerTimeChanged', this.updateTimebar.bind(this))
+    //document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
   componentWillUnmount () {
-    MovieStore.removeListener('playerChanged', this.updateControls.bind(this))
+    ControlStore.removeListener('playerChanged', this.updateControls.bind(this))
+    ControlStore.removeListener('playerTimeChanged', this.updateTimebar.bind(this))
+    //document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
   conmutePlayPause () {
@@ -76,7 +93,7 @@ export default class Menu extends React.Component {
           </ul>
         </Col>
         <Col xs={12} sm={9}>
-          <Timebar value={this.state.timebar} min={0} max={1000} handleChange={this.changeTimebar.bind(this)}/>
+          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.changeTimebar.bind(this)}/>
         </Col>
       </Navbar>
     )

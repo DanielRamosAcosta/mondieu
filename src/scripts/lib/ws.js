@@ -39,6 +39,7 @@ export default class WebSck {
 
   chop ({ data }) {
     data = JSON.parse(data)
+    console.log(data)
     if (this.promise) {
       this.promise.res(data)
       this.promise = null

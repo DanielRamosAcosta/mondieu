@@ -17,28 +17,35 @@ class ControlStore extends EventEmitter {
     this.ws.on('Player.OnSeek', ControlActions.kodi.changeTime)
     this.ws.on('Playlist.OnAdd', ControlActions.kodi.addToPlaylist)
 
+    this.currentPlayTime = new Date()
+    this.maxPlayTime = new Date(0, 0, 0, 0, 5, 0, 0)
+
     // Figure out if player is stopped, playing something or paused
-    this.ws.sendAnd('Player.GetActivePlayers').then(({ result }) => {
-      if (result.length !== 0) {
-        this.ws.sendAnd('Player.GetProperties', {
-          'properties': [ 'time' ],
-          'playerid': result[0].playerid
-        }).then((ATime) => {
-          ATime = ATime.result.time
-          this.ws.sendAnd('Player.GetProperties', {
-            'properties': [ 'time' ],
-            'playerid': result[0].playerid
-          }).then((BTime) => {
-            BTime = BTime.result.time
-            if ((ATime.seconds === BTime.seconds) && (ATime.milliseconds === BTime.milliseconds)) {
+    this.getPlayerId().then((playerid) => {
+      if (playerid !== null) {
+        // Get player totaltime
+        //this.getPlayerTotaltime(playerid).then((totaltime) => {
+        //  totaltime = this.currentTotalTime
+        //})
+
+        // Get player currentime
+        this.getPlayTime(playerid).then((ATime) => {
+          this.getPlayTime(playerid).then((BTime) => {
+            console.log(ATime)
+            console.log(BTime)
+            if (ATime.getTime() === BTime.getTime()) {
+              console.log('Estamos en pausa')
               this.pause()
             } else {
+              console.log('Estamos en play')
               this.play()
             }
+            this.currentPlayTime = BTime
             this.emit('playerChanged')
           })
         })
       } else {
+        console.log('Estamos en stop')
         this.stop()
       }
     })
@@ -56,22 +63,89 @@ class ControlStore extends EventEmitter {
     return this.stopped
   }
 
+  getCurrentPlayTime () {
+    return this.currentPlayTime
+  }
+
+  getCurrentTotalTime () {
+    return this.currentTotalTime
+  }
+
   pause () {
     this.playing = false
     this.paused = true
     this.stopped = false
+    clearInterval(this.updateTimebar)
   }
 
   play () {
     this.playing = true
     this.paused = false
     this.stopped = false
+    this.updateTimebar = setInterval(this.updateTime.bind(this), 500)
   }
 
   stop () {
     this.playing = false
     this.paused = false
     this.stopped = true
+    clearInterval(this.updateTimebar)
+  }
+
+  getPlayerId () {
+    return new Promise((res, rej) => {
+      this.ws.sendAnd('Player.GetActivePlayers').then(({ result }) => {
+        if (result.length === 0) {
+          res(null)
+        } else {
+          res(result[0].playerid)
+        }
+      })
+    })
+  }
+
+  getPlayTime (playerid) {
+    return new Promise((res, rej) => {
+      this.ws.sendAnd('Player.GetProperties', {
+        'properties': [ 'time' ],
+        'playerid': playerid
+      }).then((time) => {
+        if (time) {
+          let {hours, minutes, seconds, milliseconds} = time.result.time
+          time = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
+          res(time)
+        } else {
+          res(null)
+        }
+      })
+    })
+  }
+
+  getPlayerTotaltime (playerid) {
+    return new Promise((res, rej) => {
+      this.ws.sendAnd('Player.GetProperties', {
+        'properties': [ 'totaltime' ],
+        'playerid': playerid
+      }).then((totaltime) => {
+        if (totaltime) {
+          let {hours, minutes, seconds, milliseconds} = totaltime.result.totaltime
+          totaltime = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
+          res(totaltime)
+        } else {
+          res(null)
+        }
+      })
+    })
+  }
+
+  updateTime () {
+    this.getPlayerId().then((playerid) => {
+      if (playerid !== null) {
+        this.getPlayTime(playerid).then((time) => {
+          ControlActions.kodi.changeTime(time)
+        })
+      }
+    })
   }
 
   handleActions (action) {
@@ -92,7 +166,8 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_CHANGETIME': {
-        console.log(action.params)
+        console.log('KODI_PLAYER_CHANGETIME')
+        this.currentPlayTime = action.params
         this.emit('playerTimeChanged')
         break
       }
