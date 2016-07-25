@@ -5,10 +5,12 @@ const autoprefixer = require('autoprefixer')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 
+const appDirName = 'app'
+
 const sassLoaders = [
   'css-loader',
   'postcss-loader',
-  'sass-loader?indentedSyntax=sass&includePaths[]=' + path.resolve(__dirname, './src')
+  'sass-loader?indentedSyntax=sass&includePaths[]=' + path.resolve(__dirname, './app')
 ]
 
 let commonPlugins = [
@@ -17,9 +19,9 @@ let commonPlugins = [
 ]
 
 module.exports = {
-  context: path.join(__dirname, '/src'),
+  context: path.join(__dirname, '/app'),
   devtool: debug ? 'inline-sourcemap' : null,
-  entry: './scripts/client.js',
+  entry: './scripts/client.jsx',
   module: {
     loaders: [
       {
@@ -72,7 +74,7 @@ module.exports = {
     })
   ],
   resolve: {
-    extensions: ['', '.js', '.sass'],
-    root: [path.join(__dirname, './src')]
+    extensions: ['', '.js', '.jsx', '.sass'],
+    root: [path.join(__dirname, './app')]
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Nav from '../components/layout/Nav.js'
-import PlayControls from '../components/layout/PlayControls.js'
+import Nav from '../components/layout/Nav'
+import PlayControls from '../components/layout/PlayControls'
 import EasyTransition from 'react-easy-transition'
 
 export default class Layout extends React.Component {

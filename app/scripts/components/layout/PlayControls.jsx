@@ -5,9 +5,9 @@ import Icon from 'react-fontawesome'
 
 import * as ControlActions from '../../actions/controlActions'
 import ControlStore from '../../stores/ControlStore'
-import Timebar from '../PlayControls/Timebar.js'
+import Timebar from '../PlayControls/Timebar'
 
-import '../../../styles/_playControls.sass'
+import '../../../styles/_playControls'
 
 export default class Menu extends React.Component {
   constructor () {

@@ -54,7 +54,7 @@ gulp.task('serve', ['clean'], (cb) => {
 
   spawn('node', [
     './node_modules/.bin/webpack-dev-server',
-    '--content-base', 'src',
+    '--content-base', 'app',
     '--host', ip,
     '--hot',
     '--inline',
@@ -68,7 +68,7 @@ gulp.task('clean', () => {
 })
 
 gulp.task('lint', function () {
-  return gulp.src(['./src/**/*.js'])
+  return gulp.src(['./app/**/*.js'])
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: false
