@@ -1,28 +1,27 @@
 const gulp = require('gulp')
-const spawn = require('child_process').spawn
 const del = require('del')
-// const zip = require('gulp-zip')
 const path = require('path')
 const standard = require('gulp-standard')
-var mkdirp = require('mkdirp')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-const autoprefixer = require('autoprefixer')
+const mkdirp = require('mkdirp')
+const gutil = require('gulp-util')
+const zipFolder = require('zip-folder')
+const webpackStream = require('webpack-stream')
+const webpack = require('webpack')
+const WebpackDevServer = require('webpack-dev-server')
 
-var debug = process.env.NODE_ENV !== 'production'
-
-// Requerirlo para que salte el error si no se hizo npm install
-const webpack = require('webpack-stream')
-
-require('webpack-dev-server')
+// Activar estadísticas de las tareas
 require('gulp-stats')(gulp)
+
+const debug = process.env.NODE_ENV !== 'production'
+
+const addonName = 'webinterface.mondieu'
 
 gulp.task('zip', ['build', 'copyfiles', 'compress', 'cleanBuild'])
 
 gulp.task('build', ['clean'], (cb) => {
   return gulp.src('app/scripts/client.jsx')
-    .pipe(webpack(webpackConfig))
-    .pipe(gulp.dest('dist/'))
+    .pipe(webpackStream(webpackConfig))
+    .pipe(gulp.dest(`${addonName}/${addonName}`))
 })
 
 gulp.task('copyfiles', ['build'], () => {
@@ -31,41 +30,38 @@ gulp.task('copyfiles', ['build'], () => {
     './LICENSE.txt',
     './README.md'
   ])
-  .pipe(gulp.dest('./webinterface.mondieu'))
+  .pipe(gulp.dest(`${addonName}/${addonName}`))
 })
 
 gulp.task('compress', ['copyfiles'], (cb) => {
-  mkdirp('./dist', function(err) {
-    spawn('zip', [
-      '-0',
-      '-r',
-      './dist/webinterface.mondieu.zip',
-      './webinterface.mondieu/'
-    ], {stdio: 'inherit'})
-    .on('exit', cb)
+  mkdirp('./dist', () => {
+    zipFolder(path.join(__dirname, addonName), path.join(__dirname, `/dist/${addonName}.zip`), (err) => {
+      if (err) {
+        gutil.log('[zipFolder]', err)
+      } else {
+        gutil.log('[zipFolder]', 'Done')
+      }
+      cb()
+    })
   })
 })
 
 gulp.task('cleanBuild', ['compress'], (cb) => {
-  return del(['webinterface.mondieu'], cb)
+  return del([addonName], cb)
 })
 
 gulp.task('serve', ['clean'], (cb) => {
-  let ip = '0.0.0.0'
+  let ip = process.env.IP || '0.0.0.0'
 
-  if (process.env.IP) {
-    ip = process.env.IP
-  }
-
-  spawn('node', [
-    './node_modules/.bin/webpack-dev-server',
-    '--content-base', 'app',
-    '--host', ip,
-    '--hot',
-    '--inline',
-    '--history-api-fallback'
-  ], {stdio: 'inherit'})
-  .on('exit', cb)
+  new WebpackDevServer(webpack(webpackConfig), {
+    hot: true,
+    historyApiFallback: true,
+    inline: true
+  }).listen(8080, ip, (err) => {
+    if (err) throw new gutil.PluginError('webpack-dev-server', err)
+    // Server listening
+    gutil.log('[webpack-dev-server]', `http://${ip}:8080`)
+  })
 })
 
 gulp.task('clean', () => {
@@ -73,17 +69,23 @@ gulp.task('clean', () => {
 })
 
 gulp.task('lint', function () {
-  return gulp.src(['./app/**/*.js'])
+  return gulp.src([
+    './app/**/*.js',
+    './app/**/*.jsx'
+  ])
     .pipe(standard())
     .pipe(standard.reporter('default', {
       breakOnError: false
     }))
 })
 
-
 // ============================================================================
 // Webpack Config
 // ============================================================================
+
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const autoprefixer = require('autoprefixer')
 
 const sassLoaders = [
   'css-loader',
@@ -99,6 +101,7 @@ let commonPlugins = [
 const webpackConfig = {
   context: path.join(__dirname, '/app'),
   devtool: debug ? 'inline-sourcemap' : null,
+  entry: './scripts/client.jsx',
   module: {
     loaders: [
       {
@@ -137,6 +140,7 @@ const webpackConfig = {
     ]
   },
   output: {
+    path: path.join(__dirname, 'dist'),
     filename: 'main.js'
   },
   plugins: debug ? [].concat(commonPlugins) : [
