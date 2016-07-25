@@ -31,13 +31,13 @@ export default class WebSck {
   }
 
   sendAnd (method, params) {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       let { id } = this
-      this.promise[id] = { res, rej }
+      this.promise[id] = { resolve, reject }
       this.send(method, params)
       setTimeout(() => {
         if (this.promise[id]) {
-          this.promise[id].rej('Reponse time out')
+          this.promise[id].reject('Reponse time out')
           delete this.promise[id]
         }
       }, 1000)
@@ -46,10 +46,10 @@ export default class WebSck {
 
   chop ({ data }) {
     data = JSON.parse(data)
-    //console.log(data)
+    // console.log(data)
     let { id } = data
     if (this.promise[id]) {
-      this.promise[id].res(data.result)
+      this.promise[id].resolve(data.result)
       delete this.promise[id]
       return
     }

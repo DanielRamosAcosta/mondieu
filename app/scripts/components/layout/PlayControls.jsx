@@ -105,7 +105,7 @@ export default class Menu extends React.Component {
           </ul>
         </Col>
         <Col xs={12} sm={9}>
-          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.changeTimebar.bind(this)}/>
+          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.changeTimebar.bind(this)} />
         </Col>
       </Navbar>
     )

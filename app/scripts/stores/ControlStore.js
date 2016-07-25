@@ -94,19 +94,19 @@ class ControlStore extends EventEmitter {
   }
 
   getPlayerId () {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       this.ws.sendAnd('Player.GetActivePlayers').then((players) => {
         if (players.length === 0) {
-          res(null)
+          resolve(null)
         } else {
-          res(players[0].playerid)
+          resolve(players[0].playerid)
         }
       })
     })
   }
 
   getPlayTime (playerid) {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       this.ws.sendAnd('Player.GetProperties', {
         'properties': [ 'time' ],
         'playerid': playerid
@@ -114,16 +114,16 @@ class ControlStore extends EventEmitter {
         if (time) {
           let {hours, minutes, seconds, milliseconds} = time
           time = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
-          res(time)
+          resolve(time)
         } else {
-          res(null)
+          resolve(null)
         }
       })
     })
   }
 
   getPlayerTotaltime (playerid) {
-    return new Promise((res, rej) => {
+    return new Promise((resolve, reject) => {
       this.ws.sendAnd('Player.GetProperties', {
         'properties': [ 'totaltime' ],
         'playerid': playerid
@@ -131,9 +131,9 @@ class ControlStore extends EventEmitter {
         if (totaltime) {
           let {hours, minutes, seconds, milliseconds} = totaltime
           totaltime = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
-          res(totaltime)
+          resolve(totaltime)
         } else {
-          res(null)
+          resolve(null)
         }
       })
     })
@@ -182,7 +182,7 @@ class ControlStore extends EventEmitter {
             })
           }
         })
-        //this.emit('playerNewItem')
+        // this.emit('playerNewItem')
         break
       }
       case 'PLAYER_PAUSE': {
