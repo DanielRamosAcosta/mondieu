@@ -43,6 +43,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "flux": "^2.1.1",
+    "font-awesome": "^4.6.3",
     "gulp": "^3.9.1",
     "history": "^3.0.0",
     "html-webpack-plugin": "^2.21.0",
@@ -67,6 +68,9 @@
     "gulp-rename": "^1.2.2",
     "gulp-standard": "^7.0.1",
     "gulp-stats": "0.0.3",
-    "gulp-zip": "^3.2.0"
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
+    "mkdirp": "^0.5.1",
+    "zip-folder": "^1.0.0"
   }
 }
