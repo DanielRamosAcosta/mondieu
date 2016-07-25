@@ -6,7 +6,7 @@ export default class WebSck {
     this.socket.onmessage = this.chop.bind(this)
     this.id = 1
 
-    this.promise = null
+    this.promise = {}
   }
 
   on (method, func) {
@@ -32,20 +32,28 @@ export default class WebSck {
 
   sendAnd (method, params) {
     return new Promise((res, rej) => {
-      this.promise = { res, rej }
+      let { id } = this
+      this.promise[id] = { res, rej }
       this.send(method, params)
+      setTimeout(() => {
+        if (this.promise[id]) {
+          this.promise[id].rej('Reponse time out')
+          delete this.promise[id]
+        }
+      }, 1000)
     })
   }
 
   chop ({ data }) {
     data = JSON.parse(data)
-    console.log(data)
-    if (this.promise) {
-      this.promise.res(data)
-      this.promise = null
+    //console.log(data)
+    let { id } = data
+    if (this.promise[id]) {
+      this.promise[id].res(data.result)
+      delete this.promise[id]
       return
     }
-    let { method, params, result } = data
+    let { method, params } = data
     // TODO: Borrar estos console.log
     console.log(method)
     if (this.events[method]) {

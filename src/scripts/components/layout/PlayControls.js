@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Navbar, Nav, NavItem, Col } from 'react-bootstrap'
+import { Navbar, NavItem, Col } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 
 import * as ControlActions from '../../actions/controlActions'
@@ -19,7 +19,8 @@ export default class Menu extends React.Component {
       playing: ControlStore.isPlaying(),
       paused: ControlStore.isPaused(),
       stopped: ControlStore.isStopped(),
-      timebar: 0
+      timebar: 0,
+      totaltime: ControlStore.getCurrentTotalTime()
     }
   }
 
@@ -31,9 +32,18 @@ export default class Menu extends React.Component {
     })
   }
 
+  updateTotalTime () {
+    this.setState({
+      totaltime: ControlStore.getCurrentTotalTime()
+    })
+  }
+
   updateTimebar () {
     let time = ControlStore.getCurrentPlayTime()
-    let max = new Date(0, 0, 0, 0, 5, 0, 0)
+    let max = this.state.totaltime
+    console.log(time)
+    console.log(max)
+    console.log('===========================')
     let base = new Date(0, 0, 0, 0, 0, 0, 0)
     let currentMS = time - base
     let maxMS = max - base
@@ -45,13 +55,15 @@ export default class Menu extends React.Component {
   componentWillMount () {
     ControlStore.on('playerChanged', this.updateControls.bind(this))
     ControlStore.on('playerTimeChanged', this.updateTimebar.bind(this))
-    //document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
+    ControlStore.on('maxTimeChanged', this.updateTotalTime.bind(this))
+    // document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
   componentWillUnmount () {
     ControlStore.removeListener('playerChanged', this.updateControls.bind(this))
     ControlStore.removeListener('playerTimeChanged', this.updateTimebar.bind(this))
-    //document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
+    ControlStore.removeListener('maxTimeChanged', this.updateTotalTime.bind(this))
+    // document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
   conmutePlayPause () {

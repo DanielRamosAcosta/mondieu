@@ -24,15 +24,16 @@ class ControlStore extends EventEmitter {
     this.getPlayerId().then((playerid) => {
       if (playerid !== null) {
         // Get player totaltime
-        //this.getPlayerTotaltime(playerid).then((totaltime) => {
-        //  totaltime = this.currentTotalTime
-        //})
+        this.getPlayerTotaltime(playerid).then((totaltime) => {
+          this.currentTotalTime = totaltime
+          this.emit('maxTimeChanged')
+        })
 
         // Get player currentime
         this.getPlayTime(playerid).then((ATime) => {
           this.getPlayTime(playerid).then((BTime) => {
-            console.log(ATime)
-            console.log(BTime)
+            console.log(ATime.getTime())
+            console.log(BTime.getTime())
             if (ATime.getTime() === BTime.getTime()) {
               console.log('Estamos en pausa')
               this.pause()
@@ -94,11 +95,11 @@ class ControlStore extends EventEmitter {
 
   getPlayerId () {
     return new Promise((res, rej) => {
-      this.ws.sendAnd('Player.GetActivePlayers').then(({ result }) => {
-        if (result.length === 0) {
+      this.ws.sendAnd('Player.GetActivePlayers').then((players) => {
+        if (players.length === 0) {
           res(null)
         } else {
-          res(result[0].playerid)
+          res(players[0].playerid)
         }
       })
     })
@@ -109,9 +110,9 @@ class ControlStore extends EventEmitter {
       this.ws.sendAnd('Player.GetProperties', {
         'properties': [ 'time' ],
         'playerid': playerid
-      }).then((time) => {
+      }).then(({ time }) => {
         if (time) {
-          let {hours, minutes, seconds, milliseconds} = time.result.time
+          let {hours, minutes, seconds, milliseconds} = time
           time = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
           res(time)
         } else {
@@ -126,9 +127,9 @@ class ControlStore extends EventEmitter {
       this.ws.sendAnd('Player.GetProperties', {
         'properties': [ 'totaltime' ],
         'playerid': playerid
-      }).then((totaltime) => {
+      }).then(({ totaltime }) => {
         if (totaltime) {
-          let {hours, minutes, seconds, milliseconds} = totaltime.result.totaltime
+          let {hours, minutes, seconds, milliseconds} = totaltime
           totaltime = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
           res(totaltime)
         } else {
@@ -172,8 +173,16 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_ADDTOPLAYLIST': {
-        console.log(action.params)
-        this.emit('playerNewItem')
+        this.getPlayerId().then((playerid) => {
+          if (playerid !== null) {
+            // Get player totaltime
+            this.getPlayerTotaltime(playerid).then((totaltime) => {
+              this.currentTotalTime = totaltime
+              this.emit('maxTimeChanged')
+            })
+          }
+        })
+        //this.emit('playerNewItem')
         break
       }
       case 'PLAYER_PAUSE': {
