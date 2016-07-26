@@ -4,7 +4,11 @@
   "description": "Página Github de usuario",
   "main": "src/scripts/client.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "gulp release",
+    "dev": "gulp dev",
+    "build": "gulp build",
+    "clean": "gulp clean",
   },
   "repository": {
     "type": "git",
@@ -12,7 +16,7 @@
   },
   "keywords": [
     "Página",
-    "Usuario"
+    "Kodi"
   ],
   "author": "Daniel Ramos",
   "contributors": [
@@ -32,7 +36,7 @@
     "babel-loader": "^6.2.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-react-html-attrs": "^2.0.0",
-    "babel-plugin-transform-class-properties": "^6.3.13",
+    "babel-plugin-transform-class-properties": "^6.11.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
