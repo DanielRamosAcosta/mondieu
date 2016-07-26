@@ -8,7 +8,7 @@
     "release": "gulp release",
     "dev": "gulp dev",
     "build": "gulp build",
-    "clean": "gulp clean",
+    "clean": "gulp clean"
   },
   "repository": {
     "type": "git",
