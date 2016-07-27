@@ -65,6 +65,7 @@ gulp.task('cleanBuild', (cb) => {
 
 gulp.task('dev', (cb) => {
   global.tasksConfig.debug = true
+
   let ip = process.env.IP || '0.0.0.0'
 
   new WebpackDevServer(webpack(webpackConfig), {
@@ -166,6 +167,11 @@ const webpackConfig = {
       minimize: true,
       compress: {
         warnings: false
+      }
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production')
       }
     })
   ]),
