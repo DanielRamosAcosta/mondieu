@@ -22,7 +22,7 @@ global.tasksConfig = {
 gulp.task('build', ['clean'], (cb) => {
   global.tasksConfig.debug = false
   return gulp.src('app/scripts/client.jsx')
-    .pipe(webpackStream(webpackConfig))
+    .pipe(webpackStream(webpackConfig()))
     .pipe(gulp.dest(global.tasksConfig.destDir))
 })
 
@@ -68,10 +68,10 @@ gulp.task('dev', (cb) => {
 
   let ip = process.env.IP || '0.0.0.0'
 
-  new WebpackDevServer(webpack(webpackConfig), {
-    hot: true,
-    historyApiFallback: true,
-    inline: true
+  console.log(webpackConfig().debug)
+
+  new WebpackDevServer(webpack(webpackConfig()), {
+    historyApiFallback: true
   }).listen(8080, ip, (err) => {
     if (err) throw new gutil.PluginError('webpack-dev-server', err)
     // Server listening
@@ -113,75 +113,89 @@ let commonPlugins = [
   new HtmlWebpackPlugin({template: 'index.html'})
 ]
 
-const webpackConfig = {
-  context: path.join(__dirname, '/app'),
-  devtool: global.tasksConfig.debug ? 'inline-sourcemap' : null,
-  entry: './scripts/client.jsx',
-  module: {
-    loaders: [
-      {
-        test: /\.js[x]?$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['react', 'es2015', 'stage-0'],
-          plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy']
+let webpackConfig = () => {
+  let originalConf = {
+    context: path.join(__dirname, '/app'),
+    debug: global.tasksConfig.debug,
+    devtool: global.tasksConfig.debug ? 'inline-sourcemap' : null,
+    entry: './scripts/client.jsx',
+    module: {
+      loaders: [
+        {
+          test: /\.js[x]?$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel-loader',
+          query: {
+            presets: ['react', 'es2015', 'stage-0'],
+            plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy']
+          }
+        },
+        {
+          test: /\.sass$/,
+          loader: ExtractTextPlugin.extract('style-loader', sassLoaders)
+        },
+        {
+          test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+          loader: 'file-loader'
+        },
+        {
+          test: /\.json$/,
+          loader: 'json'
+        },
+        {
+          test: /\.css$/,
+          loader: 'style-loader!css-loader'
+        },
+        {
+          test: /\.png$/,
+          loader: 'url-loader?limit=100000'
+        },
+        {
+          test: /\.jpg$/,
+          loader: 'file-loader'
         }
-      },
-      {
-        test: /\.sass$/,
-        loader: ExtractTextPlugin.extract('style-loader', sassLoaders)
-      },
-      {
-        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        loader: 'file-loader'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json'
-      },
-      {
-        test: /\.css$/,
-        loader: 'style-loader!css-loader'
-      },
-      {
-        test: /\.png$/,
-        loader: 'url-loader?limit=100000'
-      },
-      {
-        test: /\.jpg$/,
-        loader: 'file-loader'
-      }
-    ]
-  },
-  output: {
-    path: path.join(__dirname, global.tasksConfig.destDir),
-    filename: 'main.js'
-  },
-  plugins: global.tasksConfig.debug ? commonPlugins : commonPlugins.concat([
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: false,
-      sourcemap: false,
-      minimize: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production')
-      }
-    })
-  ]),
-  postcss: [
-    autoprefixer({
-      browsers: ['last 2 versions']
-    })
-  ],
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.sass'],
-    root: [path.join(__dirname, './app')]
+      ]
+    },
+    output: {
+      path: path.join(__dirname, global.tasksConfig.destDir),
+      filename: 'main.js'
+    },
+    plugins: global.tasksConfig.debug ? commonPlugins : commonPlugins.concat([
+      new webpack.optimize.DedupePlugin(),
+      new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.optimize.UglifyJsPlugin({
+        mangle: false,
+        sourcemap: false,
+        minimize: true,
+        compress: {
+          warnings: false
+        }
+      }),
+      new webpack.DefinePlugin({
+        'process.env': {
+          NODE_ENV: JSON.stringify('production')
+        }
+      })
+    ]),
+    postcss: [
+      autoprefixer({
+        browsers: ['last 2 versions']
+      })
+    ],
+    resolve: {
+      extensions: ['', '.js', '.jsx', '.sass'],
+      root: [path.join(__dirname, './app')]
+    }
   }
+
+  if (global.tasksConfig.debug) {
+    originalConf.entry = [
+      'webpack-dev-server/client?http://localhost:8080/',
+      originalConf.entry
+    ]
+
+    originalConf.plugins.push(new webpack.HotModuleReplacementPlugin())
+  }
+
+  return originalConf
 }

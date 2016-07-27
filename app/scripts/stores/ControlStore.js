@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events'
+import moment from 'moment'
 
 import WebSocket from '../lib/ws'
 import * as ControlActions from '../actions/controlActions'
@@ -32,9 +33,9 @@ class ControlStore extends EventEmitter {
         // Get player currentime
         this.getPlayTime(playerid).then((ATime) => {
           this.getPlayTime(playerid).then((BTime) => {
-            console.log(ATime.getTime())
-            console.log(BTime.getTime())
-            if (ATime.getTime() === BTime.getTime()) {
+            console.log(ATime.asMilliseconds())
+            console.log(BTime.asMilliseconds())
+            if (ATime.asMilliseconds() === BTime.asMilliseconds()) {
               console.log('Estamos en pausa')
               this.pause()
             } else {
@@ -112,9 +113,7 @@ class ControlStore extends EventEmitter {
         'playerid': playerid
       }).then(({ time }) => {
         if (time) {
-          let {hours, minutes, seconds, milliseconds} = time
-          time = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
-          resolve(time)
+          resolve(moment.duration(time))
         } else {
           resolve(null)
         }
@@ -129,9 +128,7 @@ class ControlStore extends EventEmitter {
         'playerid': playerid
       }).then(({ totaltime }) => {
         if (totaltime) {
-          let {hours, minutes, seconds, milliseconds} = totaltime
-          totaltime = new Date(0, 0, 0, hours, minutes, seconds, milliseconds)
-          resolve(totaltime)
+          resolve(moment.duration(totaltime))
         } else {
           resolve(null)
         }
@@ -168,6 +165,7 @@ class ControlStore extends EventEmitter {
       }
       case 'KODI_PLAYER_CHANGETIME': {
         console.log('KODI_PLAYER_CHANGETIME')
+        console.log(action.params)
         this.currentPlayTime = action.params
         this.emit('playerTimeChanged')
         break

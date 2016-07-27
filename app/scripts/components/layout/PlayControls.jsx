@@ -41,14 +41,8 @@ export default class Menu extends React.Component {
   updateTimebar () {
     let time = ControlStore.getCurrentPlayTime()
     let max = this.state.totaltime
-    console.log(time)
-    console.log(max)
-    console.log('===========================')
-    let base = new Date(0, 0, 0, 0, 0, 0, 0)
-    let currentMS = time - base
-    let maxMS = max - base
     this.setState({
-      timebar: Math.floor((currentMS * this.totalBar) / maxMS)
+      timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
     })
   }
 
