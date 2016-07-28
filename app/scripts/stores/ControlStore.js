@@ -12,11 +12,13 @@ class ControlStore extends EventEmitter {
 
     this.ws = new WebSocket('localhost')
 
-    this.ws.on('Player.OnPlay', ControlActions.kodi.putPlay)
-    this.ws.on('Player.OnPause', ControlActions.kodi.putPause)
-    this.ws.on('Player.OnStop', ControlActions.kodi.putStop)
-    this.ws.on('Player.OnSeek', ControlActions.kodi.changeTime)
-    this.ws.on('Playlist.OnAdd', ControlActions.kodi.addToPlaylist)
+    this.state = {}
+
+    this.ws.on('Player.OnPlay', ControlActions.kodi.Player.OnPlay)
+    this.ws.on('Player.OnPause', ControlActions.kodi.Player.OnPause)
+    this.ws.on('Player.OnStop', ControlActions.kodi.Player.OnStop)
+    this.ws.on('Player.OnSeek', ControlActions.kodi.Player.OnSeek)
+    this.ws.on('Playlist.OnAdd', ControlActions.kodi.Playlist.OnAdd)
 
     this.currentPlayTime = new Date()
     this.maxPlayTime = new Date(0, 0, 0, 0, 5, 0, 0)
@@ -25,73 +27,65 @@ class ControlStore extends EventEmitter {
     this.getPlayerId().then((playerid) => {
       if (playerid !== null) {
         // Get player totaltime
-        this.getPlayerTotaltime(playerid).then((totaltime) => {
-          this.currentTotalTime = totaltime
-          this.emit('maxTimeChanged')
+        this.getTotalTime({playerid}).then((totaltime) => {
+          this.state.totalTime = totaltime
         })
 
-        // Get player currentime
-        this.getPlayTime(playerid).then((ATime) => {
-          this.getPlayTime(playerid).then((BTime) => {
+        // Get player current time and check if it's paused or playing
+        this.getCurrentTime(playerid).then((ATime) => {
+          this.OnSeek(ATime)
+
+          this.getCurrentTime(playerid).then((BTime) => {
             console.log(ATime.asMilliseconds())
             console.log(BTime.asMilliseconds())
             if (ATime.asMilliseconds() === BTime.asMilliseconds()) {
               console.log('Estamos en pausa')
-              this.pause()
+              this.OnPause()
             } else {
               console.log('Estamos en play')
-              this.play()
+              this.OnPlay()
             }
-            this.currentPlayTime = BTime
-            this.emit('playerChanged')
           })
         })
       } else {
         console.log('Estamos en stop')
-        this.stop()
+        this.OnStop()
       }
     })
   }
 
-  isPlaying () {
-    return this.playing
+  OnPause () {
+    this.state.play = false
+    this.state.pause = true
+    this.state.stop = false
+    this.virtualSeek(false)
+    this.emit('OnPause')
   }
 
-  isPaused () {
-    return this.paused
+  OnPlay () {
+    this.state.play = true
+    this.state.pause = false
+    this.state.stop = false
+    this.virtualSeek(true)
+    this.emit('OnPlay')
   }
 
-  isStopped () {
-    return this.stopped
+  OnStop () {
+    this.state.play = false
+    this.state.pause = false
+    this.state.stop = true
+    this.virtualSeek(false)
+    this.emit('OnStop')
   }
 
-  getCurrentPlayTime () {
-    return this.currentPlayTime
+  OnSeek (time) {
+    this.state.currentTime = time
+    this.emit('OnSeek')
   }
 
-  getCurrentTotalTime () {
-    return this.currentTotalTime
-  }
-
-  pause () {
-    this.playing = false
-    this.paused = true
-    this.stopped = false
-    clearInterval(this.updateTimebar)
-  }
-
-  play () {
-    this.playing = true
-    this.paused = false
-    this.stopped = false
-    this.updateTimebar = setInterval(this.updateTime.bind(this), 500)
-  }
-
-  stop () {
-    this.playing = false
-    this.paused = false
-    this.stopped = true
-    clearInterval(this.updateTimebar)
+  OnTotalTime (time) {
+    this.state.totalTime = time
+    // this.emit('OnTotalTime') Quitado hasta que tenga alguna utilidad
   }
 
   getPlayerId () {
@@ -106,11 +100,11 @@ class ControlStore extends EventEmitter {
     })
   }
 
-  getPlayTime (playerid) {
+  getCurrentTime (playerid) {
     return new Promise((resolve, reject) => {
       this.ws.sendAnd('Player.GetProperties', {
-        'properties': [ 'time' ],
-        'playerid': playerid
+        properties: [ 'time' ],
+        playerid: playerid
       }).then(({ time }) => {
         if (time) {
           resolve(moment.duration(time))
@@ -121,86 +115,105 @@ class ControlStore extends EventEmitter {
     })
   }
 
-  getPlayerTotaltime (playerid) {
+  getTotalTime ({ playerid, id, type }) {
     return new Promise((resolve, reject) => {
-      this.ws.sendAnd('Player.GetProperties', {
-        'properties': [ 'totaltime' ],
-        'playerid': playerid
-      }).then(({ totaltime }) => {
-        if (totaltime) {
-          resolve(moment.duration(totaltime))
-        } else {
-          resolve(null)
+      if (playerid) {
+        this.ws.sendAnd('Player.GetProperties', {
+          properties: [ 'totaltime' ],
+          playerid: playerid
+        }).then(({ totaltime }) => {
+          if (totaltime) {
+            resolve(moment.duration(totaltime))
+          } else {
+            resolve(null)
+          }
+        })
+      } else {
+        console.log('Hacer otra cosa')
+        switch (type) {
+          case 'movie': {
+            this.ws.sendAnd('VideoLibrary.GetMovieDetails', {
+              movieid: id,
+              properties: [ 'streamdetails' ]
+            }).then((details) => {
+              resolve(moment.duration({seconds: details.moviedetails.streamdetails.video[0].duration}))
+            })
+            break
+          }
         }
-      })
+      }
     })
   }
 
-  updateTime () {
-    this.getPlayerId().then((playerid) => {
-      if (playerid !== null) {
-        this.getPlayTime(playerid).then((time) => {
-          ControlActions.kodi.changeTime(time)
+  virtualSeek (turnOn) {
+    if (turnOn) {
+      this.intervalVirtualSeek = setInterval(() => {
+        this.getPlayerId().then((playerid) => {
+          if (playerid !== null) {
+            this.getCurrentTime(playerid).then((time) => {
+              ControlActions.kodi.Player.OnSeek({
+                data: {
+                  player: {
+                    time: {
+                      hours: time.hours(),
+                      milliseconds: time.milliseconds(),
+                      minutes: time.minutes(),
+                      seconds: time.seconds()
+                    }
+                  }
+                },
+                sender: 'xbmc'
+              })
+            })
+          }
         })
-      }
-    })
+      }, 500)
+    } else {
+      clearInterval(this.intervalVirtualSeek)
+    }
   }
 
   handleActions (action) {
     switch (action.type) {
-      case 'KODI_PLAYER_PAUSE': {
-        this.pause()
-        this.emit('playerChanged')
+      case 'KODI_PLAYER_ON_PAUSE': {
+        this.OnPause()
         break
       }
-      case 'KODI_PLAYER_PLAY': {
-        this.play()
-        this.emit('playerChanged')
+      case 'KODI_PLAYER_ON_PLAY': {
+        this.OnPlay()
         break
       }
-      case 'KODI_PLAYER_STOP': {
-        this.stop()
-        this.emit('playerChanged')
+      case 'KODI_PLAYER_ON_STOP': {
+        this.OnStop()
         break
       }
-      case 'KODI_PLAYER_CHANGETIME': {
-        console.log('KODI_PLAYER_CHANGETIME')
-        console.log(action.params)
-        this.currentPlayTime = action.params
-        this.emit('playerTimeChanged')
+      case 'KODI_PLAYER_ON_SEEK': {
+        this.OnSeek(moment.duration(action.params.data.player.time))
         break
       }
-      case 'KODI_PLAYER_ADDTOPLAYLIST': {
-        this.getPlayerId().then((playerid) => {
-          if (playerid !== null) {
-            // Get player totaltime
-            this.getPlayerTotaltime(playerid).then((totaltime) => {
-              this.currentTotalTime = totaltime
-              this.emit('maxTimeChanged')
-            })
-          }
-        })
-        // this.emit('playerNewItem')
+      case 'KODI_PLAYLIST_ONADD': {
+        // Update totalTime
+        let { id, type } = action.params.data.item
+        if (action.params.data.position === 0) {
+          this.getTotalTime({ id, type }).then((totalTime) => {
+            this.OnTotalTime(totalTime)
+          })
+        }
         break
       }
-      case 'PLAYER_PAUSE': {
+      case 'PLAYER_ON_PAUSE': {
         this.ws.send('Input.ExecuteAction', {action: 'pause'})
         break
       }
-      case 'PLAYER_PLAY': {
+      case 'PLAYER_ON_PLAY': {
         this.ws.send('Input.ExecuteAction', {action: 'play'})
         break
       }
-      case 'PLAYER_STOP': {
+      case 'PLAYER_ON_STOP': {
         this.ws.send('Input.ExecuteAction', {action: 'stop'})
         break
       }
-      case 'PLAYER_CHANGETIME': {
-        // this.ws.send(...)
-        // Send to kodi to change the time
-        break
-      }
-      case 'PLAYER_ADDTOPLAYLIST': {
+      case 'PLAYER_ON_SEEK': {
         // this.ws.send(...)
         // Send to kodi to change the time
         break

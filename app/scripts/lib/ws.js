@@ -46,7 +46,7 @@ export default class WebSck {
 
   chop ({ data }) {
     data = JSON.parse(data)
-    // console.log(data)
+    console.log(data)
     let { id } = data
     if (this.promise[id]) {
       this.promise[id].resolve(data.result)

@@ -16,74 +16,64 @@ export default class Menu extends React.Component {
     this.totalBar = 2000
 
     this.state = {
-      playing: ControlStore.isPlaying(),
-      paused: ControlStore.isPaused(),
-      stopped: ControlStore.isStopped(),
       timebar: 0,
-      totaltime: ControlStore.getCurrentTotalTime()
+      PlayPauseIcon: 'pause'
     }
   }
 
-  updateControls () {
-    this.setState({
-      playing: ControlStore.isPlaying(),
-      paused: ControlStore.isPaused(),
-      stopped: ControlStore.isStopped()
-    })
+  componentWillMount () {
+    ControlStore.on('OnSeek', this.OnSeek.bind(this))
+    ControlStore.on('OnPlay', this.OnPlay.bind(this))
+    ControlStore.on('OnPause', this.OnPause.bind(this))
+    ControlStore.on('OnStop', this.OnStop.bind(this))
+    // document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
-  updateTotalTime () {
-    this.setState({
-      totaltime: ControlStore.getCurrentTotalTime()
-    })
+  componentWillUnmount () {
+    ControlStore.removeListener('OnSeek', this.OnSeek.bind(this))
+    ControlStore.removeListener('OnPlay', this.OnPlay.bind(this))
+    ControlStore.removeListener('OnPause', this.OnPause.bind(this))
+    ControlStore.removeListener('OnStop', this.OnStop.bind(this))
+    // document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
-  updateTimebar () {
-    let time = ControlStore.getCurrentPlayTime()
-    let max = this.state.totaltime
+  OnSeek () {
+    // let time = ControlStore.getCurrentPlayTime()
+    let time = ControlStore.state.currentTime
+    let max = ControlStore.state.totalTime
     this.setState({
       timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
     })
   }
 
-  componentWillMount () {
-    ControlStore.on('playerChanged', this.updateControls.bind(this))
-    ControlStore.on('playerTimeChanged', this.updateTimebar.bind(this))
-    ControlStore.on('maxTimeChanged', this.updateTotalTime.bind(this))
-    // document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
+  OnPlay () {
+    this.setState({PlayPauseIcon: 'pause'})
   }
 
-  componentWillUnmount () {
-    ControlStore.removeListener('playerChanged', this.updateControls.bind(this))
-    ControlStore.removeListener('playerTimeChanged', this.updateTimebar.bind(this))
-    ControlStore.removeListener('maxTimeChanged', this.updateTotalTime.bind(this))
-    // document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
+  OnPause () {
+    this.setState({PlayPauseIcon: 'play'})
   }
 
-  conmutePlayPause () {
-    if (this.state.playing === true) {
-      ControlActions.putPause()
+  OnStop () {
+    this.setState({PlayPauseIcon: 'play', timebar: 0})
+  }
+
+  interactionPlayPause () {
+    // If current icon is pause, it means that is playing something
+    if (this.state.PlayPauseIcon === 'pause') {
+      ControlActions.OnPause()
     } else {
-      ControlActions.putPlay()
+      ControlActions.OnPlay()
     }
   }
 
-  stop () {
-    console.log(this.state.stopped)
-    if (!this.state.stopped) {
-      ControlActions.putStop()
+  interactionStop () {
+    if (!ControlStore.state.stop) {
+      ControlActions.OnStop()
     }
   }
 
-  getIcon () {
-    if (this.state.playing === true) {
-      return 'pause'
-    } else {
-      return 'play'
-    }
-  }
-
-  changeTimebar (event) {
+  interactionTimebar (event) {
     this.setState({timebar: event.target.value})
   }
 
@@ -93,13 +83,13 @@ export default class Menu extends React.Component {
         <Col xs={12} sm={3}>
           <ul class='playControls'>
             <NavItem eventKey={1} href='#'><Icon name='step-backward' /></NavItem>
-            <NavItem eventKey={2} onClick={this.conmutePlayPause.bind(this)} ><Icon name={this.getIcon()} /></NavItem>
-            <NavItem eventKey={2} onClick={this.stop.bind(this)} ><Icon name='stop' /></NavItem>
+            <NavItem eventKey={2} onClick={this.interactionPlayPause.bind(this)} ><Icon name={this.state.PlayPauseIcon} /></NavItem>
+            <NavItem eventKey={2} onClick={this.interactionStop.bind(this)} ><Icon name='stop' /></NavItem>
             <NavItem eventKey={4} href='#'><Icon name='step-forward' /></NavItem>
           </ul>
         </Col>
         <Col xs={12} sm={9}>
-          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.changeTimebar.bind(this)} />
+          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.interactionTimebar.bind(this)} />
         </Col>
       </Navbar>
     )
