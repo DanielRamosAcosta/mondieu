@@ -17,12 +17,12 @@ export default class Menu extends React.Component {
 
     this.state = {
       timebar: 0,
-      PlayPauseIcon: 'pause'
+      PlayPauseIcon: 'play'
     }
   }
 
   componentWillMount () {
-    ControlStore.on('OnSeek', this.OnSeek.bind(this))
+    ControlStore.on('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
     ControlStore.on('OnPlay', this.OnPlay.bind(this))
     ControlStore.on('OnPause', this.OnPause.bind(this))
     ControlStore.on('OnStop', this.OnStop.bind(this))
@@ -30,14 +30,14 @@ export default class Menu extends React.Component {
   }
 
   componentWillUnmount () {
-    ControlStore.removeListener('OnSeek', this.OnSeek.bind(this))
+    ControlStore.removeListener('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
     ControlStore.removeListener('OnPlay', this.OnPlay.bind(this))
     ControlStore.removeListener('OnPause', this.OnPause.bind(this))
     ControlStore.removeListener('OnStop', this.OnStop.bind(this))
     // document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
 
-  OnSeek () {
+  OnNewCurrentTime () {
     // let time = ControlStore.getCurrentPlayTime()
     let time = ControlStore.state.currentTime
     let max = ControlStore.state.totalTime

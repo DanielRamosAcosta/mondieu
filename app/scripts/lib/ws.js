@@ -1,4 +1,4 @@
-export default class WebSck {
+export default class WebSocket {
   constructor (addr, port = 9090) {
     this.socket = new window.WebSocket(`ws://${addr}:${port}`)
     this.events = {}
@@ -49,7 +49,7 @@ export default class WebSck {
     console.log(data)
     let { id } = data
     if (this.promise[id]) {
-      this.promise[id].resolve(data.result)
+      this.promise[id].resolve(data)
       delete this.promise[id]
       return
     }

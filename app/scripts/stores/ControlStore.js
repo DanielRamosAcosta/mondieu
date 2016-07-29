@@ -3,6 +3,7 @@ import moment from 'moment'
 
 import WebSocket from '../lib/ws'
 import * as ControlActions from '../actions/controlActions'
+import Kodi from '../lib/kodi/kodi'
 
 import dispatcher from '../dispatcher'
 
@@ -10,11 +11,11 @@ class ControlStore extends EventEmitter {
   constructor () {
     super()
 
-    this.ws = new WebSocket('localhost')
+    // this.ws = new WebSocket('localhost')
 
     this.state = {}
 
-    this.ws.on('Player.OnPlay', ControlActions.kodi.Player.OnPlay)
+    /*this.ws.on('Player.OnPlay', ControlActions.kodi.Player.OnPlay)
     this.ws.on('Player.OnPause', ControlActions.kodi.Player.OnPause)
     this.ws.on('Player.OnStop', ControlActions.kodi.Player.OnStop)
     this.ws.on('Player.OnSeek', ControlActions.kodi.Player.OnSeek)
@@ -27,13 +28,13 @@ class ControlStore extends EventEmitter {
     this.getPlayerId().then((playerid) => {
       if (playerid !== null) {
         // Get player totaltime
-        this.getTotalTime({playerid}).then((totaltime) => {
+        this.getTotalTime(playerid).then((totaltime) => {
           this.state.totalTime = totaltime
         })
 
         // Get player current time and check if it's paused or playing
         this.getCurrentTime(playerid).then((ATime) => {
-          this.OnSeek(ATime)
+          this.OnNewCurrentTime(ATime)
 
           this.getCurrentTime(playerid).then((BTime) => {
             console.log(ATime.asMilliseconds())
@@ -51,7 +52,11 @@ class ControlStore extends EventEmitter {
         console.log('Estamos en stop')
         this.OnStop()
       }
-    })
+    })*/
+
+    // TODO: Quitar estas pruebas del kodi
+    let kodi = new Kodi('localhost')
+    console.log(kodi)
   }
 
   OnPause () {
@@ -78,9 +83,9 @@ class ControlStore extends EventEmitter {
     this.emit('OnStop')
   }
 
-  OnSeek (time) {
+  OnNewCurrentTime (time) {
     this.state.currentTime = time
-    this.emit('OnSeek')
+    this.emit('OnNewCurrentTime')
   }
 
   OnTotalTime (time) {
@@ -115,33 +120,18 @@ class ControlStore extends EventEmitter {
     })
   }
 
-  getTotalTime ({ playerid, id, type }) {
+  getTotalTime (playerid) {
     return new Promise((resolve, reject) => {
-      if (playerid) {
-        this.ws.sendAnd('Player.GetProperties', {
-          properties: [ 'totaltime' ],
-          playerid: playerid
-        }).then(({ totaltime }) => {
-          if (totaltime) {
-            resolve(moment.duration(totaltime))
-          } else {
-            resolve(null)
-          }
-        })
-      } else {
-        console.log('Hacer otra cosa')
-        switch (type) {
-          case 'movie': {
-            this.ws.sendAnd('VideoLibrary.GetMovieDetails', {
-              movieid: id,
-              properties: [ 'streamdetails' ]
-            }).then((details) => {
-              resolve(moment.duration({seconds: details.moviedetails.streamdetails.video[0].duration}))
-            })
-            break
-          }
+      this.ws.sendAnd('Player.GetProperties', {
+        properties: [ 'totaltime' ],
+        playerid: playerid
+      }).then(({ totaltime }) => {
+        if (totaltime) {
+          resolve(moment.duration(totaltime))
+        } else {
+          resolve(null)
         }
-      }
+      })
     })
   }
 
@@ -180,7 +170,13 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_ON_PLAY': {
-        this.OnPlay()
+        let { playerid } = action.params.data.player
+        console.log(action.params)
+        console.log(playerid)
+        this.getTotalTime(playerid).then((totalTime) => {
+          this.OnTotalTime(totalTime)
+          this.OnPlay()
+        })
         break
       }
       case 'KODI_PLAYER_ON_STOP': {
@@ -188,17 +184,22 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_ON_SEEK': {
-        this.OnSeek(moment.duration(action.params.data.player.time))
+        this.OnNewCurrentTime(moment.duration(action.params.data.player.time))
         break
       }
       case 'KODI_PLAYLIST_ONADD': {
         // Update totalTime
+        /*
+
+        A veces esto no se llama, mejor usar OnPlay
         let { id, type } = action.params.data.item
         if (action.params.data.position === 0) {
           this.getTotalTime({ id, type }).then((totalTime) => {
             this.OnTotalTime(totalTime)
           })
         }
+
+        */
         break
       }
       case 'PLAYER_ON_PAUSE': {
