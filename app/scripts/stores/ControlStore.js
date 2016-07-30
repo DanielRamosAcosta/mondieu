@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events'
 import moment from 'moment'
 
-import WebSocket from '../lib/ws'
 import * as ControlActions from '../actions/controlActions'
 import Kodi from '../lib/kodi/kodi'
 
@@ -11,52 +10,36 @@ class ControlStore extends EventEmitter {
   constructor () {
     super()
 
-    // this.ws = new WebSocket('localhost')
+    this.kodi = new Kodi('localhost')
+    console.log(this.kodi)
 
     this.state = {}
 
-    /*this.ws.on('Player.OnPlay', ControlActions.kodi.Player.OnPlay)
-    this.ws.on('Player.OnPause', ControlActions.kodi.Player.OnPause)
-    this.ws.on('Player.OnStop', ControlActions.kodi.Player.OnStop)
-    this.ws.on('Player.OnSeek', ControlActions.kodi.Player.OnSeek)
-    this.ws.on('Playlist.OnAdd', ControlActions.kodi.Playlist.OnAdd)
+    this.kodi.Player.OnPlay(ControlActions.kodi.Player.OnPlay)
+    this.kodi.Player.OnPause(ControlActions.kodi.Player.OnPause)
+    this.kodi.Player.OnStop(ControlActions.kodi.Player.OnStop)
+    this.kodi.Player.OnSeek(ControlActions.kodi.Player.OnSeek)
+    // this.ws.on('Playlist.OnAdd', ControlActions.kodi.Playlist.OnAdd)
 
-    this.currentPlayTime = new Date()
-    this.maxPlayTime = new Date(0, 0, 0, 0, 5, 0, 0)
-
-    // Figure out if player is stopped, playing something or paused
-    this.getPlayerId().then((playerid) => {
-      if (playerid !== null) {
-        // Get player totaltime
-        this.getTotalTime(playerid).then((totaltime) => {
-          this.state.totalTime = totaltime
-        })
-
-        // Get player current time and check if it's paused or playing
-        this.getCurrentTime(playerid).then((ATime) => {
-          this.OnNewCurrentTime(ATime)
-
-          this.getCurrentTime(playerid).then((BTime) => {
-            console.log(ATime.asMilliseconds())
-            console.log(BTime.asMilliseconds())
-            if (ATime.asMilliseconds() === BTime.asMilliseconds()) {
-              console.log('Estamos en pausa')
-              this.OnPause()
-            } else {
-              console.log('Estamos en play')
-              this.OnPlay()
-            }
-          })
+    this.kodi.Player.GetActivePlayers().then((players) => {
+      if (players.length >= 1) {
+        let { playerid } = players[0]
+        this.kodi.Player.GetProperties(playerid, 'time').then(time => this.OnNewCurrentTime(time))
+        this.kodi.Player.GetProperties(playerid, 'totaltime').then(totaltime => this.OnNewTotalTime(totaltime))
+        this.kodi.Player.GetProperties(playerid, 'speed').then((speed) => {
+          if (speed) {
+            console.log('Estamos en play')
+            this.OnPlay()
+          } else {
+            console.log('Estamos en pause')
+            this.OnPause()
+          }
         })
       } else {
         console.log('Estamos en stop')
         this.OnStop()
       }
-    })*/
-
-    // TODO: Quitar estas pruebas del kodi
-    let kodi = new Kodi('localhost')
-    console.log(kodi)
+    })
   }
 
   OnPause () {
@@ -88,9 +71,9 @@ class ControlStore extends EventEmitter {
     this.emit('OnNewCurrentTime')
   }
 
-  OnTotalTime (time) {
+  OnNewTotalTime (time) {
     this.state.totalTime = time
-    // this.emit('OnTotalTime') Quitado hasta que tenga alguna utilidad
+    // this.emit('OnNewTotalTime') Quitado hasta que tenga alguna utilidad
   }
 
   getPlayerId () {
@@ -174,7 +157,7 @@ class ControlStore extends EventEmitter {
         console.log(action.params)
         console.log(playerid)
         this.getTotalTime(playerid).then((totalTime) => {
-          this.OnTotalTime(totalTime)
+          this.OnNewTotalTime(totalTime)
           this.OnPlay()
         })
         break
@@ -195,7 +178,7 @@ class ControlStore extends EventEmitter {
         let { id, type } = action.params.data.item
         if (action.params.data.position === 0) {
           this.getTotalTime({ id, type }).then((totalTime) => {
-            this.OnTotalTime(totalTime)
+            this.OnNewTotalTime(totalTime)
           })
         }
 

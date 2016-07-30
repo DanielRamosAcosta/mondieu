@@ -1,6 +1,21 @@
+import moment from 'moment'
+
 export default class Player {
   constructor (ws) {
     this.ws = ws
+  }
+
+  parseResult (data) {
+    Object.keys(data).forEach((key) => {
+      switch (key) {
+        case 'time':
+        case 'totaltime': data[key] = moment.duration(data[key])
+      }
+    })
+    if (Object.keys(data).length === 1) {
+      data = data[Object.keys(data)[0]]
+    }
+    return data
   }
 
   // Methods
@@ -31,11 +46,7 @@ export default class Player {
           reject(res.error)
           return
         }
-        if (Object.keys(res.result).length === 1) {
-          resolve(res.result[Object.keys(res.result)[0]])
-        } else {
-          resolve(res.result)
-        }
+        resolve(this.parseResult(res.result))
       })
     })
   }
