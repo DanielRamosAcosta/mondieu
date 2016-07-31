@@ -77,10 +77,12 @@ export default class Menu extends React.Component {
   }
 
   interactionTimebar (event) {
-    this.movingTimebar = true
+    // TODO: Registrar un evento para el keyup del ratón
+    // Cuando se levante, enviar las cosas al kodi
+    // this.movingTimebar = true
+    // let por = (this.state.timebar * 100) / this.totalBar
+    // ControlActions.OnSeek(por)
     this.setState({timebar: event.target.value})
-    let por = (this.state.timebar * 100) / this.totalBar
-    ControlActions.OnSeek(por)
   }
 
   render () {
