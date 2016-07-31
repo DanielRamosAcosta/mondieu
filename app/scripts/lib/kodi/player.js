@@ -3,6 +3,7 @@ import moment from 'moment'
 export default class Player {
   constructor (ws) {
     this.ws = ws
+    console.log(moment)
   }
 
   parseResult (data) {
@@ -56,7 +57,26 @@ export default class Player {
   // Open
   // PlayPause
   // Rotate
-  // Seek
+
+  Seek (playerid, params) {
+    return new Promise((resolve, reject) => {
+      if (typeof params === 'number') {
+        this.ws.sendAnd('Player.Seek', {
+          playerid: playerid,
+          value: params
+        }).then((res) => {
+          if (res.error) {
+            reject(res.error)
+            return
+          }
+          resolve(res.result)
+        })
+      } else {
+        reject('Unimplemented')
+      }
+    })
+  }
+
   // SetAudioStream
   // SetPartymode
   // SetRepeat
@@ -68,22 +88,26 @@ export default class Player {
 
   // Notifications
   OnPause (cb) {
-    this.ws.on('Player.OnPause', cb)
+    this.ws.on('Player.OnPause', ({ data }) => cb(data))
   }
 
   OnPlay (cb) {
-    this.ws.on('Player.OnPlay', cb)
+    this.ws.on('Player.OnPlay', ({ data }) => cb(data))
   }
 
   // Player.OnPropertyChanged
 
   OnSeek (cb) {
-    this.ws.on('Player.OnSeek', cb)
+    this.ws.on('Player.OnSeek', ({ data }) => {
+      data.player.seekoffset = moment.duration(data.player.seekoffset)
+      data.player.time = moment.duration(data.player.time)
+      cb(data)
+    })
   }
 
   // Player.OnSpeedChanged
 
   OnStop (cb) {
-    this.ws.on('Player.OnStop', cb)
+    this.ws.on('Player.OnStop', ({ data }) => cb(data))
   }
 }

@@ -64,6 +64,13 @@ export function OnStop (params) {
   })
 }
 
+export function OnSeek (params) {
+  dispatcher.dispatch({
+    type: 'PLAYER_ON_SEEK',
+    params: params
+  })
+}
+
 export function changeTime (params) {
   dispatcher.dispatch({
     type: 'PLAYER_CHANGETIME',

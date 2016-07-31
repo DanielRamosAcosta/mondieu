@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events'
-import moment from 'moment'
 
 import * as ControlActions from '../actions/controlActions'
 import Kodi from '../lib/kodi/kodi'
@@ -24,8 +23,11 @@ class ControlStore extends EventEmitter {
     this.kodi.Player.GetActivePlayers().then((players) => {
       if (players.length >= 1) {
         let { playerid } = players[0]
-        this.kodi.Player.GetProperties(playerid, 'time').then(time => this.OnNewCurrentTime(time))
-        this.kodi.Player.GetProperties(playerid, 'totaltime').then(totaltime => this.OnNewTotalTime(totaltime))
+        this.kodi.Player.GetProperties(playerid, 'totaltime').then((totaltime) => {
+          console.log(totaltime)
+          this.OnNewTotalTime(totaltime)
+          this.kodi.Player.GetProperties(playerid, 'time').then(time => this.OnNewCurrentTime(time))
+        })
         this.kodi.Player.GetProperties(playerid, 'speed').then((speed) => {
           if (speed) {
             console.log('Estamos en play')
@@ -76,66 +78,16 @@ class ControlStore extends EventEmitter {
     // this.emit('OnNewTotalTime') Quitado hasta que tenga alguna utilidad
   }
 
-  getPlayerId () {
-    return new Promise((resolve, reject) => {
-      this.ws.sendAnd('Player.GetActivePlayers').then((players) => {
-        if (players.length === 0) {
-          resolve(null)
-        } else {
-          resolve(players[0].playerid)
-        }
-      })
-    })
-  }
-
-  getCurrentTime (playerid) {
-    return new Promise((resolve, reject) => {
-      this.ws.sendAnd('Player.GetProperties', {
-        properties: [ 'time' ],
-        playerid: playerid
-      }).then(({ time }) => {
-        if (time) {
-          resolve(moment.duration(time))
-        } else {
-          resolve(null)
-        }
-      })
-    })
-  }
-
-  getTotalTime (playerid) {
-    return new Promise((resolve, reject) => {
-      this.ws.sendAnd('Player.GetProperties', {
-        properties: [ 'totaltime' ],
-        playerid: playerid
-      }).then(({ totaltime }) => {
-        if (totaltime) {
-          resolve(moment.duration(totaltime))
-        } else {
-          resolve(null)
-        }
-      })
-    })
-  }
-
   virtualSeek (turnOn) {
     if (turnOn) {
       this.intervalVirtualSeek = setInterval(() => {
-        this.getPlayerId().then((playerid) => {
-          if (playerid !== null) {
-            this.getCurrentTime(playerid).then((time) => {
+        this.kodi.Player.GetActivePlayers().then((players) => {
+          if (players.length >= 1) {
+            let { playerid } = players[0]
+            this.kodi.Player.GetProperties(playerid, 'time').then((time) => {
+              this.OnNewCurrentTime(time)
               ControlActions.kodi.Player.OnSeek({
-                data: {
-                  player: {
-                    time: {
-                      hours: time.hours(),
-                      milliseconds: time.milliseconds(),
-                      minutes: time.minutes(),
-                      seconds: time.seconds()
-                    }
-                  }
-                },
-                sender: 'xbmc'
+                player: {time}
               })
             })
           }
@@ -153,11 +105,8 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_ON_PLAY': {
-        let { playerid } = action.params.data.player
-        console.log(action.params)
-        console.log(playerid)
-        this.getTotalTime(playerid).then((totalTime) => {
-          this.OnNewTotalTime(totalTime)
+        this.kodi.Player.GetProperties(action.params.player.playerid, 'totaltime').then((totaltime) => {
+          this.OnNewTotalTime(totaltime)
           this.OnPlay()
         })
         break
@@ -167,37 +116,28 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'KODI_PLAYER_ON_SEEK': {
-        this.OnNewCurrentTime(moment.duration(action.params.data.player.time))
+        this.OnNewCurrentTime(action.params.player.time)
         break
       }
       case 'KODI_PLAYLIST_ONADD': {
-        // Update totalTime
-        /*
-
-        A veces esto no se llama, mejor usar OnPlay
-        let { id, type } = action.params.data.item
-        if (action.params.data.position === 0) {
-          this.getTotalTime({ id, type }).then((totalTime) => {
-            this.OnNewTotalTime(totalTime)
-          })
-        }
-
-        */
+        // TODO: Do something useful
         break
       }
       case 'PLAYER_ON_PAUSE': {
-        this.ws.send('Input.ExecuteAction', {action: 'pause'})
+        this.kodi.Input.ExecuteAction('pause')
         break
       }
       case 'PLAYER_ON_PLAY': {
-        this.ws.send('Input.ExecuteAction', {action: 'play'})
+        this.kodi.Input.ExecuteAction('play')
         break
       }
       case 'PLAYER_ON_STOP': {
-        this.ws.send('Input.ExecuteAction', {action: 'stop'})
+        this.kodi.Input.ExecuteAction('stop')
         break
       }
       case 'PLAYER_ON_SEEK': {
+        // this.kodi.Player.Seek(1, action.params)
+        this.kodi.Player.Seek(1, action.params)
         // this.ws.send(...)
         // Send to kodi to change the time
         break

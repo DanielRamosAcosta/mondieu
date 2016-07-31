@@ -14,6 +14,7 @@ export default class Menu extends React.Component {
     super()
 
     this.totalBar = 2000
+    this.movingTimebar = false
 
     this.state = {
       timebar: 0,
@@ -39,11 +40,13 @@ export default class Menu extends React.Component {
 
   OnNewCurrentTime () {
     // let time = ControlStore.getCurrentPlayTime()
-    let time = ControlStore.state.currentTime
-    let max = ControlStore.state.totalTime
-    this.setState({
-      timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
-    })
+    if (!this.movingTimebar) {
+      let time = ControlStore.state.currentTime
+      let max = ControlStore.state.totalTime
+      this.setState({
+        timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
+      })
+    }
   }
 
   OnPlay () {
@@ -74,7 +77,10 @@ export default class Menu extends React.Component {
   }
 
   interactionTimebar (event) {
+    this.movingTimebar = true
     this.setState({timebar: event.target.value})
+    let por = (this.state.timebar * 100) / this.totalBar
+    ControlActions.OnSeek(por)
   }
 
   render () {

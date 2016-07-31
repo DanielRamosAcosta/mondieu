@@ -9,7 +9,7 @@ export default class Timebar extends React.Component {
         min={this.props.min}
         max={this.props.max}
         onInput={this.props.handleChange}
-        step={this.props.step}
+        onKeyUp={this.props.onKeyup}
       />
     )
   }
