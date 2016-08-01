@@ -15,6 +15,7 @@ export default class Menu extends React.Component {
 
     this.totalBar = 2000
     this.movingTimebar = false
+    this.onMouseUp = this.interactionTimebar.bind(this)
 
     this.state = {
       timebar: 0,
@@ -76,11 +77,21 @@ export default class Menu extends React.Component {
     }
   }
 
-  interactionTimebar (event) {
-    this.movingTimebar = true
+  interactionTimebar () {
+    ControlActions.OnSeek((this.state.timebar * 100) / this.totalBar)
+  }
+
+  changingTimebar (event) {
+    if (!this.movingTimebar) {
+      this.movingTimebar = true
+      this.onMouseUp = (event) => {
+        document.removeEventListener('mouseup', this.onMouseUp, false)
+        this.movingTimebar = false
+        this.interactionTimebar()
+      }
+      document.addEventListener('mouseup', this.onMouseUp, false)
+    }
     this.setState({timebar: event.target.value})
-    let por = (this.state.timebar * 100) / this.totalBar
-    ControlActions.OnSeek(por)
   }
 
   render () {
@@ -95,7 +106,7 @@ export default class Menu extends React.Component {
           </ul>
         </Col>
         <Col xs={12} sm={9}>
-          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.interactionTimebar.bind(this)} />
+          <Timebar value={this.state.timebar} min={0} max={this.totalBar} handleChange={this.changingTimebar.bind(this)} />
         </Col>
       </Navbar>
     )

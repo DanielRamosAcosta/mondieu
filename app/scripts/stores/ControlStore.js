@@ -136,10 +136,12 @@ class ControlStore extends EventEmitter {
         break
       }
       case 'PLAYER_ON_SEEK': {
-        // this.kodi.Player.Seek(1, action.params)
-        this.kodi.Player.Seek(1, action.params)
-        // this.ws.send(...)
-        // Send to kodi to change the time
+        this.kodi.Player.GetActivePlayers().then((players) => {
+          if (players.length >= 1) {
+            let { playerid } = players[0]
+            this.kodi.Player.Seek(playerid, action.params)
+          }
+        })
         break
       }
     }
