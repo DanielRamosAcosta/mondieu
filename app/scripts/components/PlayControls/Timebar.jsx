@@ -1,15 +1,24 @@
 import React from 'react'
+import Slider from 'material-ui/Slider'
 
 export default class Timebar extends React.Component {
+  constructor () {
+    super()
+    this.styles = {
+      marginTop: 15,
+      marginBottom: 0
+    }
+  }
   render () {
     return (
-      <input
-        type='range'
+      <Slider
+        class='timebar'
+        sliderStyle={this.styles}
         value={this.props.value}
         min={this.props.min}
         max={this.props.max}
-        onInput={this.props.handleChange}
-        onKeyUp={this.props.onKeyup}
+        onChange={this.props.onChange}
+        onDragStop={this.props.onDragStop}
       />
     )
   }

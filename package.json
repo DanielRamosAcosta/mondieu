@@ -37,7 +37,7 @@
     "font-awesome": "^4.6.3",
     "history": "^3.0.0",
     "lockr": "^0.8.4",
-    "materialize-css": "https://github.com/Dogfalo/materialize/archive/v0.97.7.tar.gz",
+    "material-ui": "^0.15.2",
     "moment": "^2.14.1",
     "react": "^15.1.0",
     "react-bootstrap": "^0.30.0-rc.2",
@@ -45,7 +45,8 @@
     "react-easy-transition": "0.0.5",
     "react-fontawesome": "^1.1.0",
     "react-router": "^2.4.1",
-    "react-router-bootstrap": "^0.23.0"
+    "react-router-bootstrap": "^0.23.0",
+    "react-tap-event-plugin": "^1.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
