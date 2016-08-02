@@ -37,6 +37,7 @@
     "font-awesome": "^4.6.3",
     "history": "^3.0.0",
     "lockr": "^0.8.4",
+    "materialize-css": "https://github.com/Dogfalo/materialize/archive/v0.97.7.tar.gz",
     "moment": "^2.14.1",
     "react": "^15.1.0",
     "react-bootstrap": "^0.30.0-rc.2",
