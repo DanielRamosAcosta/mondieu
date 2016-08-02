@@ -11,6 +11,7 @@ import '../../../styles/_playControls'
 
 export default class Menu extends React.Component {
   constructor () {
+<<<<<<< HEAD
     super()
 
     this.totalBar = 2000

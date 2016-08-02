@@ -68,8 +68,6 @@ gulp.task('dev', (cb) => {
 
   let ip = process.env.IP || '0.0.0.0'
 
-  console.log(webpackConfig().debug)
-
   new WebpackDevServer(webpack(webpackConfig()), {
     historyApiFallback: true
   }).listen(8080, ip, (err) => {
