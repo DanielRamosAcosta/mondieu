@@ -87,7 +87,7 @@ export default class Menu extends React.Component {
 
   render () {
     return (
-      <Navbar fixedBottom>
+      <Navbar fixedBottom class='text-center'>
         <Col xs={12} sm={3}>
           <ul class='playControls'>
             <NavItem eventKey={1} href='#'><Icon name='step-backward' /></NavItem>

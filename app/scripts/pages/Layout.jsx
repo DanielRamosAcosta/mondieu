@@ -6,10 +6,11 @@ import EasyTransition from 'react-easy-transition'
 
 export default class Layout extends React.Component {
   render () {
-    const { location } = this.props
+    const { location, history } = this.props
+
     return (
       <div>
-        <Nav location={location} />
+        <Nav location={location} history={history} />
         <div class='container main'>
           <EasyTransition
             path={location.pathname}

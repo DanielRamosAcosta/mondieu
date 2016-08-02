@@ -13,7 +13,6 @@ export default class Timebar extends React.Component {
     return (
       <Slider
         class='timebar'
-        sliderStyle={this.styles}
         value={this.props.value}
         min={this.props.min}
         max={this.props.max}

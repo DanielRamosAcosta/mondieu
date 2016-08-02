@@ -16,6 +16,8 @@ import 'font-awesome/css/font-awesome.css'
 import '../styles/common'
 
 const app = document.getElementById('app')
+import injectTapEventPlugin from 'react-tap-event-plugin'
+injectTapEventPlugin()
 
 ReactDOM.render(
   // TODO: see if we can switch to browserHistory
