@@ -1,6 +1,9 @@
 @import "variables.sass"
 @import "~bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss"
 
+.navbar-default.navPlayControls
+  background-color: white /* #00BCD4 */
+
 .playControls
   padding: 14px 0 0 0
   li
@@ -13,10 +16,9 @@
 
     a
       span
-        color: #777
-        @include transition(0.5s)
+        color: white
+        @include transition(0.2s)
         &:hover
-          color: #333333
           @include scale(1.2, 1.2)
 
   @media screen and (max-width: $screen-xs-max)

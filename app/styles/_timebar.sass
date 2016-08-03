@@ -1,0 +1,21 @@
+@import "variables.sass"
+
+.timebar > div
+  margin-top: 16px !important
+  margin-bottom: 0 !important
+
+  @media screen and (max-width: $screen-xs-max)
+    margin-top: 0px !important
+    margin-bottom: 7px !important
+  > div
+    > div
+      &:nth-child(0)
+        background-color: green !important
+      &:nth-child(1)
+        background-color: aqua !important
+      &:nth-child(2)
+        background-color: chocolate !important
+      &:nth-child(3)
+        background-color: crimson !important
+        > div
+          color: crimson !important
