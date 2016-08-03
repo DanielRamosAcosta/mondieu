@@ -6,6 +6,8 @@ import { LinkContainer } from 'react-router-bootstrap'
 import AppBar from 'material-ui/AppBar'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import Slider from 'material-ui/Slider'
+import IconButton from 'material-ui/IconButton'
+import NavigationMenu from 'material-ui/svg-icons/navigation/menu'
 
 import LangStore from '../../stores/LangStore'
 
@@ -14,7 +16,6 @@ export default class Menu extends React.Component {
     super(props, context)
 
     this.pages = [
-      'home',
       'movies',
       'tvshows',
       'music',
@@ -60,20 +61,40 @@ export default class Menu extends React.Component {
     this.context.router.push(tab.props['data-route'])
   }
 
+  calculateTabs (loc) {
+    let tabs = this.pages.map((page, i) => {
+      return (
+        <Tab
+          key={i+1}
+          style={this.tabStyle}
+          label={this.state.lang.page[page]}
+          data-route={'/' + page.toLowerCase()}
+          onActive={this.handleActive.bind(this)}
+        />
+      )
+    })
+    tabs.unshift(
+      <Tab
+        key={0}
+        style={this.tabStyle}
+        label={this.state.lang.page['home']}
+        data-route={'/'}
+        onActive={this.handleActive.bind(this)}
+      />
+    )
+    console.log(tabs)
+    return tabs
+  }
+
   getPagesMaterialUI (loc) {
+    const { location } = this.props
+
+    let index = this.pages.indexOf(location.pathname.substring(1)) + 1
+    console.log(index)
+
     return(
-      <Tabs class='hidden-xs' initialSelectedIndex={0}>
-        {this.pages.map((page, i) => {
-          return (
-            <Tab
-              key={i}
-              style={this.tabStyle}
-              label={this.state.lang.page[page]}
-              data-route={'/' + page.toLowerCase()}
-              onActive={this.handleActive.bind(this)}
-            />
-          )
-        })}
+      <Tabs class='hidden-xs' initialSelectedIndex={index}>
+        {this.calculateTabs(loc)}
       </Tabs>
     )
   }
@@ -85,6 +106,7 @@ export default class Menu extends React.Component {
       <AppBar
         title="Mondieu"
         showMenuIconButton={true}
+        iconElementLeft={<IconButton class='visible-xs'><NavigationMenu /></IconButton>}
         iconElementRight={this.getPagesMaterialUI(location.pathname)}
       />
     )

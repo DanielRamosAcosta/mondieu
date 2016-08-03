@@ -9,7 +9,8 @@ class ControlStore extends EventEmitter {
   constructor () {
     super()
 
-    this.kodi = new Kodi('localhost')
+    this.kodi = new Kodi(location.host.match(/(.*):/)[1])
+    console.log(Kodi)
     console.log(this.kodi)
 
     this.state = {}
