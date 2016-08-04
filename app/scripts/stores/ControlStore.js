@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events'
 
-import * as ControlActions from '../actions/controlActions'
-import Kodi from '../lib/kodi/kodi'
+import * as ControlActions from '~/scripts/actions/controlActions'
+import Kodi from '~/scripts/lib/kodi/kodi'
 
-import dispatcher from '../dispatcher'
+import dispatcher from '~/scripts/dispatcher'
 
 class ControlStore extends EventEmitter {
   constructor () {

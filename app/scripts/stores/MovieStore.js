@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events'
 
-// import * as MovieActions from '../actions/movieActions'
+// import * as MovieActions from '~/scripts/actions/movieActions'
 
-import dispatcher from '../dispatcher'
+import dispatcher from '~/scripts/dispatcher'
 
 class MovieStore extends EventEmitter {
   // constructor () {

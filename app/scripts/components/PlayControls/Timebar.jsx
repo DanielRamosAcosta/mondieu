@@ -1,7 +1,7 @@
 import React from 'react'
 import Slider from 'material-ui/Slider'
 
-import '../../../styles/_timebar.sass'
+import '~/styles/_timebar'
 
 export default class Timebar extends React.Component {
   constructor () {

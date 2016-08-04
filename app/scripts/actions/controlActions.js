@@ -1,4 +1,4 @@
-import dispatcher from '../dispatcher'
+import dispatcher from '~/scripts/dispatcher'
 
 export let kodi = {
   Player: {

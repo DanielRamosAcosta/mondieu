@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 
-import dispatcher from '../dispatcher'
+import dispatcher from '~/scripts/dispatcher'
 import store from 'lockr'
 
 class LangStore extends EventEmitter {

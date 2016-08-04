@@ -1,4 +1,4 @@
-import WebSocket from '../ws'
+import WebSocket from '~/scripts/lib/ws'
 
 import Input from './input'
 import Player from './player'

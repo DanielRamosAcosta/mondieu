@@ -3,17 +3,17 @@ import ReactDOM from 'react-dom'
 import { Router, Route, IndexRoute, /* hashHistory,*/ browserHistory } from 'react-router'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-import Layout from './pages/Layout'
+import Layout from '~/scripts/pages/Layout'
 
-import Home from './pages/Home'
-import Movies from './pages/Movies'
-import Music from './pages/Music'
-import TVShows from './pages/TVShows'
-import Settings from './pages/Settings'
+import Home from '~/scripts/pages/Home'
+import Movies from '~/scripts/pages/Movies'
+import Music from '~/scripts/pages/Music'
+import TVShows from '~/scripts/pages/TVShows'
+import Settings from '~/scripts/pages/Settings'
 
-import '../styles/Bootstrap'
+import '~/styles/Bootstrap'
 import 'font-awesome/css/font-awesome.css'
-import '../styles/common'
+import '~/styles/common'
 
 const app = document.getElementById('app')
 import injectTapEventPlugin from 'react-tap-event-plugin'

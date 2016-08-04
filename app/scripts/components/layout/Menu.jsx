@@ -8,9 +8,9 @@ import IconButton from 'material-ui/IconButton'
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
-import '../../../styles/_menu'
+import '~/styles/_menu'
 
-import LangStore from '../../stores/LangStore'
+import LangStore from '~/scripts/stores/LangStore'
 
 export default class Menu extends React.Component {
   constructor (props, context) {

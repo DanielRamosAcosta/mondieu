@@ -1,6 +1,6 @@
 import React from 'react'
 
-import LangStore from '../stores/LangStore'
+import LangStore from '~/scripts/stores/LangStore'
 
 export default class Home extends React.Component {
   constructor () {

@@ -3,11 +3,11 @@ import React from 'react'
 import { Navbar, NavItem, Col } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 
-import * as ControlActions from '../../actions/controlActions'
-import ControlStore from '../../stores/ControlStore'
-import Timebar from '../PlayControls/Timebar'
+import * as ControlActions from '~/scripts/actions/controlActions'
+import ControlStore from '~/scripts/stores/ControlStore'
+import Timebar from '~/scripts/components/PlayControls/Timebar'
 
-import '../../../styles/_playControls'
+import '~/styles/_playControls'
 
 export default class Menu extends React.Component {
   constructor () {
