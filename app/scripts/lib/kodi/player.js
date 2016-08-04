@@ -3,7 +3,6 @@ import moment from 'moment'
 export default class Player {
   constructor (ws) {
     this.ws = ws
-    console.log(moment)
   }
 
   parseResult (data) {

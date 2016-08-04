@@ -1,7 +1,7 @@
 import React from 'react'
 
-import Menu from '~/scripts/components/layout/Menu'
-import PlayControls from '~/scripts/components/layout/PlayControls'
+import Menu from '~/scripts/components/Layout/Menu'
+import PlayControls from '~/scripts/components/Layout/PlayControls'
 import EasyTransition from 'react-easy-transition'
 
 export default class Layout extends React.Component {
