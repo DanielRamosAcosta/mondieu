@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Nav from '../components/layout/Nav'
+import Menu from '../components/layout/Menu'
 import PlayControls from '../components/layout/PlayControls'
 import EasyTransition from 'react-easy-transition'
 
@@ -10,7 +10,7 @@ export default class Layout extends React.Component {
 
     return (
       <div>
-        <Nav location={location} history={history} />
+        <Menu location={location} history={history} />
         <div class='container main'>
           <EasyTransition
             path={location.pathname}

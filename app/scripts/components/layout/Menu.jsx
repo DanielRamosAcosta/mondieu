@@ -1,14 +1,14 @@
 import React from 'react'
 
+import _ from 'lodash'
+
 import AppBar from 'material-ui/AppBar'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import IconButton from 'material-ui/IconButton'
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
-import { Link } from 'react-router'
 import '../../../styles/_menu'
-import _ from 'lodash'
 
 import LangStore from '../../stores/LangStore'
 
@@ -45,7 +45,7 @@ export default class Menu extends React.Component {
     LangStore.removeListener('change', this.getLang)
   }
 
-  toggleDrawer (event) {
+  toggleDrawer () {
     this.setState({open: !this.state.open})
   }
 
@@ -54,7 +54,7 @@ export default class Menu extends React.Component {
     let page = _.findKey(this.state.lang.page, _.partial(_.isEqual, name))
     let pathname = page === 'home' ? '/' : `/${page}`
     this.context.router.push(pathname)
-    this.setState({open: false})
+    this.toggleDrawer()
   }
 
   handleActive (tab) {
@@ -75,7 +75,7 @@ export default class Menu extends React.Component {
               class='navBarTab'
               key={i}
               label={this.state.lang.page[page]}
-              data-route={'/' + (i === 0 ? '' : page.toLowerCase())} // if home redirect to /
+              data-route={`/${i === 0 ? '' : page.toLowerCase()}`} // if home redirect to /
               onActive={this.handleActive.bind(this)}
             />
           )
@@ -103,9 +103,7 @@ export default class Menu extends React.Component {
             return (
               <MenuItem
                 key={i}
-                // '/' + (i === 0 ? '' : page.toLowerCase())
                 onTouchTap={this.pushPage.bind(this)}
-                // TODO: LO DEJE HACIEND LOS LINKS DE MENUITEM
               >
                 {this.state.lang.page[page]}
             </MenuItem>
