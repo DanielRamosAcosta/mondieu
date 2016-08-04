@@ -125,7 +125,7 @@ let webpackConfig = () => {
           loader: 'babel-loader',
           query: {
             presets: ['react', 'es2015', 'stage-0'],
-            plugins: ['react-html-attrs', 'transform-class-properties', 'transform-decorators-legacy', ['babel-project-relative-import', {
+            plugins: ['react-html-attrs', 'babel-polyfill', 'transform-class-properties', 'transform-decorators-legacy', ['babel-project-relative-import', {
               'sourceDir': 'app/'
             }]]
           }
