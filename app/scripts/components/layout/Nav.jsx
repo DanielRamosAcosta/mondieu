@@ -1,13 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router'
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap'
-import { LinkContainer } from 'react-router-bootstrap'
 import AppBar from 'material-ui/AppBar'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import Slider from 'material-ui/Slider'
 import IconButton from 'material-ui/IconButton'
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu'
+import Drawer from 'material-ui/Drawer'
+import MenuItem from 'material-ui/MenuItem'
+import { Link } from 'react-router'
+import '../../../styles/_menu'
+import _ from 'lodash'
 
 import LangStore from '../../stores/LangStore'
 
@@ -16,6 +17,7 @@ export default class Menu extends React.Component {
     super(props, context)
 
     this.pages = [
+      'home',
       'movies',
       'tvshows',
       'music',
@@ -24,12 +26,8 @@ export default class Menu extends React.Component {
 
     this.getLang = this.getLang.bind(this)
     this.state = {
-      lang: LangStore.getLang()
-    }
-
-    this.tabStyle = {
-      paddingLeft: 1 + 'em',
-      paddingRight: 1 + 'em'
+      lang: LangStore.getLang(),
+      open: false
     }
   }
 
@@ -47,54 +45,41 @@ export default class Menu extends React.Component {
     LangStore.removeListener('change', this.getLang)
   }
 
-  getPages (loc) {
-    return this.pages.map((page, i) => {
-      return (
-        <LinkContainer to={'/' + page.toLowerCase()} key={i}>
-          <NavItem eventKey={i}>{this.state.lang.page[page]}</NavItem>
-        </LinkContainer>
-      )
-    })
+  toggleDrawer (event) {
+    this.setState({open: !this.state.open})
+  }
+
+  pushPage (event) {
+    let name = event.target.innerHTML.match(/.+-->(.+)<!--.+/)[1]
+    let page = _.findKey(this.state.lang.page, _.partial(_.isEqual, name))
+    let pathname = page === 'home' ? '/' : `/${page}`
+    this.context.router.push(pathname)
+    this.setState({open: false})
   }
 
   handleActive (tab) {
     this.context.router.push(tab.props['data-route'])
   }
 
-  calculateTabs (loc) {
-    let tabs = this.pages.map((page, i) => {
-      return (
-        <Tab
-          key={i+1}
-          style={this.tabStyle}
-          label={this.state.lang.page[page]}
-          data-route={'/' + page.toLowerCase()}
-          onActive={this.handleActive.bind(this)}
-        />
-      )
-    })
-    tabs.unshift(
-      <Tab
-        key={0}
-        style={this.tabStyle}
-        label={this.state.lang.page['home']}
-        data-route={'/'}
-        onActive={this.handleActive.bind(this)}
-      />
-    )
-    console.log(tabs)
-    return tabs
-  }
+  getTabs (loc) {
+    let index = this.pages.indexOf(loc.substring(1))
+    if (index === -1) {
+      index = 0
+    }
 
-  getPagesMaterialUI (loc) {
-    const { location } = this.props
-
-    let index = this.pages.indexOf(location.pathname.substring(1)) + 1
-    console.log(index)
-
-    return(
+    return (
       <Tabs class='hidden-xs' initialSelectedIndex={index}>
-        {this.calculateTabs(loc)}
+        {this.pages.map((page, i) => {
+          return (
+            <Tab
+              class='navBarTab'
+              key={i}
+              label={this.state.lang.page[page]}
+              data-route={'/' + (i === 0 ? '' : page.toLowerCase())} // if home redirect to /
+              onActive={this.handleActive.bind(this)}
+            />
+          )
+        })}
       </Tabs>
     )
   }
@@ -103,12 +88,31 @@ export default class Menu extends React.Component {
     const { location } = this.props
 
     return (
-      <AppBar
-        title="Mondieu"
-        showMenuIconButton={true}
-        iconElementLeft={<IconButton class='visible-xs'><NavigationMenu /></IconButton>}
-        iconElementRight={this.getPagesMaterialUI(location.pathname)}
-      />
+      <div>
+        <AppBar
+          title='Mondieu'
+          iconElementLeft={<IconButton class='visible-xs' onClick={this.toggleDrawer.bind(this)}><NavigationMenu /></IconButton>}
+          iconElementRight={this.getTabs(location.pathname)}
+        />
+        <Drawer
+          open={this.state.open}
+          docked={false}
+          onRequestChange={this.toggleDrawer.bind(this)}
+        >
+          {this.pages.map((page, i) => {
+            return (
+              <MenuItem
+                key={i}
+                // '/' + (i === 0 ? '' : page.toLowerCase())
+                onTouchTap={this.pushPage.bind(this)}
+                // TODO: LO DEJE HACIEND LOS LINKS DE MENUITEM
+              >
+                {this.state.lang.page[page]}
+            </MenuItem>
+            )
+          })}
+        </Drawer>
+      </div>
     )
   }
 }
@@ -116,4 +120,8 @@ export default class Menu extends React.Component {
 // TODO: Change into static
 Menu.contextTypes = {
   router: React.PropTypes.object.isRequired
+}
+
+Menu.PropTypes = {
+  location: React.PropTypes.object.isRequired
 }
