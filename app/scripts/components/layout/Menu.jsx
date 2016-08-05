@@ -10,7 +10,7 @@ import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import '~/styles/_menu'
 
-import LangStore from '~/scripts/stores/LangStore'
+// import LangStore from '~/scripts/stores/LangStore'
 
 export default class Menu extends React.Component {
   constructor (props, context) {
@@ -26,23 +26,34 @@ export default class Menu extends React.Component {
 
     this.getLang = this.getLang.bind(this)
     this.state = {
-      lang: LangStore.getLang(),
+      lang: {
+        "page": {
+          "home": "Home",
+          "movies": "Movies",
+          "tvshows": "TV Shows",
+          "music": "Music",
+          "settings": "Settings"
+        }
+      },
+      // LangStore.getLang(),
       open: false
     }
   }
 
   getLang () {
+    /*
     this.setState({
       lang: LangStore.getLang()
     })
+    */
   }
 
   componentWillMount () {
-    LangStore.on('change', this.getLang)
+    // LangStore.on('change', this.getLang)
   }
 
   componentWillUnmount () {
-    LangStore.removeListener('change', this.getLang)
+    // LangStore.removeListener('change', this.getLang)
   }
 
   toggleDrawer () {

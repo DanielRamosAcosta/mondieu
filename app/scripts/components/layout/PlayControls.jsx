@@ -3,26 +3,36 @@ import React from 'react'
 import { Navbar, NavItem, Col } from 'react-bootstrap'
 import Icon from 'react-fontawesome'
 
-import * as ControlActions from '~/scripts/actions/controlActions'
-import ControlStore from '~/scripts/stores/ControlStore'
+// import * as ControlActions from '~/scripts/actions/controlActions'
+// import ControlStore from '~/scripts/stores/ControlStore'
 import Timebar from '~/scripts/components/PlayControls/Timebar'
+
+import { connect } from 'react-redux'
+import { ExecuteAction, Seek } from '../../actions/playControlActions'
 
 import '~/styles/_playControls'
 
-export default class Menu extends React.Component {
+import Kodi from '~/scripts/lib/kodi/kodi' // TODO: Cambiar kodi por index
+
+@connect((store) => {
+  return {
+    PlayPauseIcon: store.playControls.PlayPauseIcon,
+    timebar: store.playControls.timebar,
+    totalBar: store.playControls.totalBar,
+    time: store.playControls.time,
+    maxTime: store.playControls.maxTime
+  }
+})
+export default class PlayControls extends React.Component {
   constructor () {
     super()
 
-    this.totalBar = 2000
-    this.movingTimebar = false
-    this.onMouseUp = this.interactionTimebar.bind(this)
+    this.timebar = 0
 
-    this.state = {
-      timebar: 0,
-      PlayPauseIcon: 'play'
-    }
+    console.log(this.props)
   }
 
+  /*
   componentWillMount () {
     ControlStore.on('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
     ControlStore.on('OnPlay', this.OnPlay.bind(this))
@@ -48,41 +58,23 @@ export default class Menu extends React.Component {
         timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
       })
     }
-  }
-
-  OnPlay () {
-    this.setState({PlayPauseIcon: 'pause'})
-  }
-
-  OnPause () {
-    this.setState({PlayPauseIcon: 'play'})
-  }
-
-  OnStop () {
-    this.setState({PlayPauseIcon: 'play', timebar: 0})
-  }
+  }*/
 
   interactionPlayPause () {
-    // If current icon is pause, it means that is playing something
-    if (this.state.PlayPauseIcon === 'pause') {
-      ControlActions.OnPause()
-    } else {
-      ControlActions.OnPlay()
-    }
+   this.props.dispatch(ExecuteAction(this.props.PlayPauseIcon))
   }
 
   interactionStop () {
-    if (!ControlStore.state.stop) {
-      ControlActions.OnStop()
-    }
+    this.props.dispatch(ExecuteAction('stop'))
   }
 
   interactionTimebar () {
-    ControlActions.OnSeek((this.state.timebar * 100) / this.totalBar)
+    // ControlActions.OnSeek()
+    this.props.dispatch(Seek((this.timebar * 100) / this.props.totalBar))
   }
 
   changingTimebar (_, value) {
-    this.setState({timebar: value})
+    this.timebar = value
   }
 
   render () {
@@ -91,13 +83,13 @@ export default class Menu extends React.Component {
         <Col xs={12} sm={3}>
           <ul class='playControls'>
             <NavItem eventKey={1} href='#'><Icon name='step-backward' /></NavItem>
-            <NavItem eventKey={2} onClick={this.interactionPlayPause.bind(this)} ><Icon name={this.state.PlayPauseIcon} /></NavItem>
+            <NavItem eventKey={2} onClick={this.interactionPlayPause.bind(this)} ><Icon name={this.props.PlayPauseIcon} /></NavItem>
             <NavItem eventKey={2} onClick={this.interactionStop.bind(this)} ><Icon name='stop' /></NavItem>
             <NavItem eventKey={4} href='#'><Icon name='step-forward' /></NavItem>
           </ul>
         </Col>
         <Col xs={12} sm={9}>
-          <Timebar value={this.state.timebar} min={0} max={this.totalBar} onDragStop={this.interactionTimebar.bind(this)} onChange={this.changingTimebar.bind(this)}/>
+          <Timebar value={this.props.timebar} min={0} max={this.props.totalBar} onDragStop={this.interactionTimebar.bind(this)} onChange={this.changingTimebar.bind(this)}/>
         </Col>
       </Navbar>
     )

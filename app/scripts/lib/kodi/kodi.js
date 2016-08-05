@@ -10,4 +10,10 @@ export default class Kodi {
     this.Input = new Input(this.webSocket)
     this.Player = new Player(this.webSocket)
   }
+  disconnect () {
+    if (this.webSocket !== null) {
+      this.webSocket.close()
+    }
+    this.webSocket = null
+  }
 }

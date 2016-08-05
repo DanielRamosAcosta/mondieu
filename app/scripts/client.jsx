@@ -3,8 +3,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router, Route, IndexRoute, /* hashHistory,*/ browserHistory } from 'react-router'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import { Provider } from 'react-redux'
 
 import Layout from '~/scripts/pages/Layout'
+import store from './store'
 
 import Home from '~/scripts/pages/Home'
 import Movies from '~/scripts/pages/Movies'
@@ -22,16 +24,18 @@ injectTapEventPlugin()
 
 ReactDOM.render(
   // TODO: see if we can switch to browserHistory
-  <MuiThemeProvider>
-    <Router history={browserHistory}>
-      <Route path='/' component={Layout}>
-        <IndexRoute component={Home} />
-        <Route path='home' name='home' component={Home} />
-        <Route path='movies' name='movies' component={Movies} />
-        <Route path='music' name='music' component={Music} />
-        <Route path='tvshows' name='tvshows' component={TVShows} />
-        <Route path='settings' name='settings' component={Settings} />
-      </Route>
-    </Router>
-  </MuiThemeProvider>,
+  <Provider store={store} >
+    <MuiThemeProvider>
+      <Router history={browserHistory}>
+        <Route path='/' component={Layout}>
+          <IndexRoute component={Home} />
+          <Route path='home' name='home' component={Home} />
+          <Route path='movies' name='movies' component={Movies} />
+          <Route path='music' name='music' component={Music} />
+          <Route path='tvshows' name='tvshows' component={TVShows} />
+          <Route path='settings' name='settings' component={Settings} />
+        </Route>
+      </Router>
+    </MuiThemeProvider>
+  </Provider>,
 app)
