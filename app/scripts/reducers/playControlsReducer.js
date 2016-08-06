@@ -11,25 +11,45 @@ export default function reducer(state={
     case 'EXECUTE_ACTION': {
       console.log('soy EXECUTE_ACTION')
       console.log(action.payload)
-      if (action.payload.action === 'play') {
+      if (action.payload === 'play') {
         return {...state, PlayPauseIcon: 'pause'}
       }
-      if (action.payload.action === 'pause') {
+      if (action.payload === 'pause') {
         return {...state, PlayPauseIcon: 'play'}
       }
-      if (action.payload.action === 'stop') {
+      if (action.payload === 'stop') {
         return {...state, PlayPauseIcon: 'play', timebar: 0}
       }
     }
     case 'SEEK': {
       console.log(action.payload)
-      let maxTime = moment.duration({hours: 3})
-      // TODO: Quitar el maxtime este
       return {
         ...state,
-        timebar: Math.floor((action.payload.time.asMilliseconds() * state.totalBar) / maxTime.asMilliseconds()),
-        maxtime: maxTime,
+        timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.maxTime.asMilliseconds()),
         time: action.payload
+      }
+    }
+    case 'FETCH_TIMEBAR_FULFILLED': {
+      console.log(action.payload)
+      let { time, totaltime } = action.payload
+      return {
+        ...state,
+        timebar: Math.floor((time.asMilliseconds() * state.totalBar) / totaltime.asMilliseconds()),
+        time: time,
+        // TODO: Cambiar maxTime ---> totaltime
+        maxTime: totaltime
+      }
+    }
+    case 'FETCH_CONTROLS_FULFILLED': {
+      if (action.payload === 'pause') {
+        return {...state, PlayPauseIcon: 'play'}
+      }
+      if (action.payload === 'play') {
+        return {...state, PlayPauseIcon: 'pause'}
+      }
+      if (action.payload === 'stop') {
+        // TODO: Hide controls: true
+        return {...state, PlayPauseIcon: 'play', timebar: 0}
       }
     }
   }

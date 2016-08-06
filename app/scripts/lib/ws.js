@@ -5,6 +5,7 @@ export default class WebSocket {
 
     this.socket.onmessage = this.chop.bind(this)
     this.id = 1
+    this.sendQueue = []
 
     this.promise = {}
   }
@@ -16,32 +17,48 @@ export default class WebSocket {
   send (method, params) {
     let data = {
       jsonrpc: '2.0',
-      id: this.id,
+      id: Math.floor(Math.random() * 1000000),
       method: method,
       params: params || {}
     }
+
     if (this.socket.readyState !== this.socket.OPEN) {
-      this.socket.onopen = (event) => {
-        this.socket.send(JSON.stringify(data))
+      this.sendQueue.push(data)
+      this.socket.onopen = () => {
+        this.sendQueue.forEach(data => {
+          this.socket.send(JSON.stringify(data))
+        })
       }
     } else {
       this.socket.send(JSON.stringify(data))
     }
-    this.id++
+    return data.id
   }
 
-  sendAnd (method, params) {
-    return new Promise((resolve, reject) => {
-      let { id } = this
-      this.promise[id] = { resolve, reject }
-      this.send(method, params)
-      setTimeout(() => {
-        if (this.promise[id]) {
-          this.promise[id].reject('Reponse time out')
-          delete this.promise[id]
-        }
-      }, 1000)
-    })
+  sendAnd (method, params, attempt, resolve, reject) {
+    // 3 attempts to get reponse, recurstive function
+
+    if (attempt !== 0 && !attempt) {
+      attempt = 0
+      return new Promise((resolve, reject) => {
+        this.sendAnd(method, params, attempt, resolve, reject)
+      })
+    }
+
+    if (attempt >= 3) {
+      return reject('Reponse time out ' + method)
+    }
+
+    attempt = attempt + 1
+
+    let id = this.send(method, params)
+    this.promise[id] = { resolve, reject }
+    setTimeout(() => {
+      if (this.promise[id]) {
+        delete this.promise[id]
+        this.sendAnd(method, params, attempt, resolve, reject)
+      }
+    }, 100)
   }
 
   chop ({ data }) {

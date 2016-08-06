@@ -7,6 +7,6 @@ import kodi from './middleware/kodi'
 
 import reducer from './reducers'
 
-const middleware = applyMiddleware(promise(), thunk, logger(), kodi)
+const middleware = applyMiddleware(kodi, promise(), thunk, logger())
 
 export default createStore(reducer, middleware)

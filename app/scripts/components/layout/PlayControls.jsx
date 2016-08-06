@@ -8,7 +8,7 @@ import Icon from 'react-fontawesome'
 import Timebar from '~/scripts/components/PlayControls/Timebar'
 
 import { connect } from 'react-redux'
-import { ExecuteAction, Seek } from '../../actions/playControlActions'
+import { ExecuteAction, Seek, GetTimebarState, FetchControls } from '../../actions/playControlActions'
 
 import '~/styles/_playControls'
 
@@ -28,19 +28,20 @@ export default class PlayControls extends React.Component {
     super()
 
     this.timebar = 0
-
-    console.log(this.props)
   }
 
-  /*
   componentWillMount () {
+    /*
     ControlStore.on('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
     ControlStore.on('OnPlay', this.OnPlay.bind(this))
     ControlStore.on('OnPause', this.OnPause.bind(this))
-    ControlStore.on('OnStop', this.OnStop.bind(this))
+    ControlStore.on('OnStop', this.OnStop.bind(this))*/
+    console.log(this.props)
+    this.props.dispatch(GetTimebarState())
+    this.props.dispatch(FetchControls())
     // document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
-
+  /*
   componentWillUnmount () {
     ControlStore.removeListener('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
     ControlStore.removeListener('OnPlay', this.OnPlay.bind(this))

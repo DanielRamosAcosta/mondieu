@@ -31,7 +31,16 @@ const kodiMiddleware = (() => {
   }
 
   return store => next => action => {
-    if (action.payload.origin === 'kodi') {
+    if (action.payload && (action.payload.origin === 'kodi')) {
+      // TODO: change fro switch
+      if (action.type === 'SEEK') {
+        action.payload = action.payload.time
+      }
+      if (action.type === 'EXECUTE_ACTION') {
+        action.payload = action.payload.action
+      }
+      // console.log(action)
+      // console.log(action.payload)
       return next(action)
     }
 
@@ -46,7 +55,7 @@ const kodiMiddleware = (() => {
         return
       }
       case 'SEEK': {
-        kodi.Player.GetActivePlayers().then((players) => {
+        kodi.Player.GetActivePlayers().then(players => {
           if (players.length >= 1) {
             let { playerid } = players[0]
             kodi.Player.Seek(playerid, action.payload.time)
@@ -54,8 +63,45 @@ const kodiMiddleware = (() => {
         })
         return
       }
+      case 'FETCH_TIMEBAR': {
+        let p1 = new Promise((resolve, reject) => {
+          kodi.Player.GetActivePlayers().then(players => {
+            if (players.length >= 1) {
+              let { playerid } = players[0]
+              kodi.Player.GetProperties(playerid, 'totaltime').then(totaltime => {
+                kodi.Player.GetProperties(playerid, 'time').then(time => {
+                  resolve({time, totaltime})
+                })
+              })
+            }
+          })
+        })
+        action.payload = p1
+        return next(action)
+      }
+      case 'FETCH_CONTROLS': {
+        let p1 = new Promise((resolve, reject) => {
+          kodi.Player.GetActivePlayers().then(players => {
+            if (players.length >= 1) {
+              let { playerid } = players[0]
+              kodi.Player.GetProperties(playerid, 'speed').then(speed => {
+                if (speed) {
+                  resolve('play')
+                } else {
+                  resolve('pause')
+                }
+              })
+            } else {
+              resolve('stop')
+            }
+          })
+        })
+        action.payload = p1
+        return next(action)
+      }
+      default:
+        return next(action)
     }
-    return next(action)
   }
 })()
 
