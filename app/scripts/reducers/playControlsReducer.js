@@ -9,8 +9,6 @@ export default function reducer(state={
 }, action) {
   switch (action.type) {
     case 'EXECUTE_ACTION': {
-      console.log('soy EXECUTE_ACTION')
-      console.log(action.payload)
       if (action.payload === 'play') {
         return {...state, PlayPauseIcon: 'pause'}
       }

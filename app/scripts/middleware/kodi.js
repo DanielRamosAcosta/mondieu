@@ -1,10 +1,11 @@
 import Kodi from '~/scripts/lib/kodi/kodi' // TODO: Cambiar kodi por index
 
-import { ExecuteAction, Seek } from '~/scripts/actions/playControlActions'
+import { ExecuteAction, Seek, GetTimebarState } from '~/scripts/actions/playControlActions'
 
 const kodiMiddleware = (() => {
   let kodi = new Kodi('localhost')
   let firstTime = true
+  let intervalVirtualSeek = false
 
   const OnPlay = store => evt => {
     store.dispatch(ExecuteAction('play', 'kodi'))
@@ -23,6 +24,24 @@ const kodiMiddleware = (() => {
     store.dispatch(Seek(evt.player.time, 'kodi'))
   }
 
+  const VirtualSeek = (store, turnOn) => {
+    console.log('Enviar accion de cambio de tiempo')
+    if (turnOn) {
+      intervalVirtualSeek = setInterval(() => {
+        kodi.Player.GetActivePlayers().then(players => {
+          if (players.length >= 1) {
+            let { playerid } = players[0]
+            kodi.Player.GetProperties(playerid, 'time').then(time => {
+              store.dispatch(Seek(time, 'kodi'))
+            })
+          }
+        })
+      }, 500)
+    } else {
+      clearInterval(intervalVirtualSeek)
+    }
+  }
+
   const bindEvents = store => {
     kodi.Player.OnPlay(OnPlay(store))
     kodi.Player.OnPause(OnPause(store))
@@ -32,12 +51,30 @@ const kodiMiddleware = (() => {
 
   return store => next => action => {
     if (action.payload && (action.payload.origin === 'kodi')) {
-      // TODO: change fro switch
+      // TODO: change to a switch
       if (action.type === 'SEEK') {
         action.payload = action.payload.time
       }
       if (action.type === 'EXECUTE_ACTION') {
         action.payload = action.payload.action
+        switch (action.payload) {
+          case 'play': {
+            console.log('Activar setInterval')
+            VirtualSeek(store, true)
+            store.dispatch(GetTimebarState())
+            break
+          }
+          case 'stop': {
+            console.log('Desactivar setInterval')
+            VirtualSeek(store, false)
+            break
+          }
+          case 'pause': {
+            console.log('Desactivar setInterval')
+            VirtualSeek(store, false)
+            break
+          }
+        }
       }
       // console.log(action)
       // console.log(action.payload)
@@ -86,12 +123,15 @@ const kodiMiddleware = (() => {
               let { playerid } = players[0]
               kodi.Player.GetProperties(playerid, 'speed').then(speed => {
                 if (speed) {
+                  VirtualSeek(store, true)
                   resolve('play')
                 } else {
+                  VirtualSeek(store, false)
                   resolve('pause')
                 }
               })
             } else {
+              VirtualSeek(store, false)
               resolve('stop')
             }
           })
