@@ -8,6 +8,7 @@ const kodiMiddleware = (() => {
   let intervalVirtualSeek = null
 
   const OnPlay = store => evt => {
+    store.dispatch(FetchTimebar())
     store.dispatch(ExecuteAction('play', 'kodi'))
   }
 
@@ -20,7 +21,6 @@ const kodiMiddleware = (() => {
   }
 
   const OnSeek = store => evt => {
-    console.log(evt)
     store.dispatch(Seek(evt.player.time, 'kodi'))
   }
 
@@ -30,6 +30,8 @@ const kodiMiddleware = (() => {
         getPlayerId().then(playerid => {
           if (playerid !== null) {
             kodi.Player.GetProperties(playerid, 'time').then(time => {
+              // TODO: Averiguar por que pega un salto pa atras
+              // console.log(`${time.hours()}:${time.minutes()}:${time.seconds()}.${time.milliseconds()}`)
               store.dispatch(Seek(time, 'kodi'))
             })
           }
@@ -37,6 +39,7 @@ const kodiMiddleware = (() => {
       }, 500)
     } else {
       clearInterval(intervalVirtualSeek)
+      intervalVirtualSeek = null
     }
   }
 
@@ -66,33 +69,30 @@ const kodiMiddleware = (() => {
     }
 
     if (action.payload && (action.payload.origin === 'kodi')) {
-      // TODO: change to a switch
-      if (action.type === 'SEEK') {
-        action.payload = action.payload.time
-      }
-      if (action.type === 'EXECUTE_ACTION') {
-        action.payload = action.payload.action
-        switch (action.payload) {
-          case 'play': {
-            console.log('Activar setInterval')
-            VirtualSeek(store, true)
-            store.dispatch(FetchTimebar())
-            break
+      switch (action.type) {
+        case 'SEEK': {
+          action.payload = action.payload.time
+          break
+        }
+        case 'EXECUTE_ACTION': {
+          action.payload = action.payload.action
+          switch (action.payload) {
+            case 'play': {
+              VirtualSeek(store, true)
+              break
+            }
+            case 'stop': {
+              VirtualSeek(store, false)
+              break
+            }
+            case 'pause': {
+              VirtualSeek(store, false)
+              break
+            }
           }
-          case 'stop': {
-            console.log('Desactivar setInterval')
-            VirtualSeek(store, false)
-            break
-          }
-          case 'pause': {
-            console.log('Desactivar setInterval')
-            VirtualSeek(store, false)
-            break
-          }
+          break
         }
       }
-      // console.log(action)
-      // console.log(action.payload)
       return next(action)
     }
 
@@ -113,7 +113,6 @@ const kodiMiddleware = (() => {
         action.payload = new Promise((resolve, reject) => {
           getPlayerId().then(playerid => {
             if (playerid !== null) {
-              console.log(playerid)
               kodi.Player.GetProperties(playerid, 'totaltime').then(totaltime => {
                 kodi.Player.GetProperties(playerid, 'time').then(time => {
                   resolve({time, totaltime})
@@ -122,7 +121,7 @@ const kodiMiddleware = (() => {
             }
           })
         })
-        return next(action)
+        break
       }
       case 'FETCH_CONTROLS': {
         action.payload = new Promise((resolve, reject) => {
@@ -143,10 +142,9 @@ const kodiMiddleware = (() => {
             }
           })
         })
-        return next(action)
+        break
       }
-      default:
-        return next(action)
+      return next(action)
     }
   }
 })()

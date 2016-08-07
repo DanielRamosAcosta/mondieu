@@ -31,7 +31,6 @@ export default class PlayControls extends React.Component {
   }
 
   componentWillMount () {
-    console.log(this.props)
     this.props.dispatch(FetchTimebar())
     this.props.dispatch(FetchControls())
   }

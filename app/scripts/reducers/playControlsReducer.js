@@ -20,7 +20,6 @@ export default function reducer(state={
       }
     }
     case 'SEEK': {
-      console.log(action.payload)
       return {
         ...state,
         timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.maxTime.asMilliseconds()),
@@ -28,7 +27,6 @@ export default function reducer(state={
       }
     }
     case 'FETCH_TIMEBAR_FULFILLED': {
-      console.log(action.payload)
       let { time, totaltime } = action.payload
       return {
         ...state,

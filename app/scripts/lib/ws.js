@@ -1,3 +1,5 @@
+// TODO: Mover a una librería específica para el kodi
+
 export default class WebSocket {
   constructor (addr, port = 9090) {
     this.socket = new window.WebSocket(`ws://${addr}:${port}`)
@@ -38,18 +40,18 @@ export default class WebSocket {
   sendAnd (method, params, attempt, resolve, reject) {
     // 3 attempts to get reponse, recurstive function
 
-    if (attempt !== 0 && !attempt) {
-      attempt = 0
+    if (!attempt) {
+      attempt = 1
       return new Promise((resolve, reject) => {
         this.sendAnd(method, params, attempt, resolve, reject)
       })
     }
 
-    if (attempt >= 3) {
+    if (attempt >= 4) {
       return reject('Reponse time out ' + method)
     }
 
-    attempt = attempt + 1
+    attempt++
 
     let id = this.send(method, params)
     this.promise[id] = { resolve, reject }
@@ -58,12 +60,11 @@ export default class WebSocket {
         delete this.promise[id]
         this.sendAnd(method, params, attempt, resolve, reject)
       }
-    }, 100)
+    }, 300) // 100
   }
 
   chop ({ data }) {
     data = JSON.parse(data)
-    console.log(data)
     let { id } = data
     if (this.promise[id]) {
       this.promise[id].resolve(data)
@@ -71,8 +72,6 @@ export default class WebSocket {
       return
     }
     let { method, params } = data
-    // TODO: Borrar estos console.log
-    console.log(method)
     if (this.events[method]) {
       this.events[method](params)
     }
