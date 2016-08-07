@@ -1,4 +1,4 @@
-import Kodi from '~/scripts/lib/kodi/kodi' // TODO: Cambiar kodi por index
+import Kodi from '~/scripts/lib/kodi'
 
 import { ExecuteAction, Seek, FetchTimebar } from '~/scripts/actions/playControlActions'
 
@@ -30,7 +30,7 @@ const kodiMiddleware = (() => {
         getPlayerId().then(playerid => {
           if (playerid !== null) {
             kodi.Player.GetProperties(playerid, 'time').then(time => {
-              // TODO: Averiguar por que pega un salto pa atras
+              // FIXME: Averiguar por que pega un salto pa atras
               // console.log(`${time.hours()}:${time.minutes()}:${time.seconds()}.${time.milliseconds()}`)
               store.dispatch(Seek(time, 'kodi'))
             })
@@ -144,8 +144,8 @@ const kodiMiddleware = (() => {
         })
         break
       }
-      return next(action)
     }
+    return next(action)
   }
 })()
 

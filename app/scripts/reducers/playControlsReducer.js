@@ -5,7 +5,7 @@ export default function reducer(state={
   timebar: 0,
   totalBar: 2000,
   time: moment.duration(0),
-  maxTime: moment.duration(0)
+  totaltime: moment.duration(0)
 }, action) {
   switch (action.type) {
     case 'EXECUTE_ACTION': {
@@ -22,7 +22,7 @@ export default function reducer(state={
     case 'SEEK': {
       return {
         ...state,
-        timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.maxTime.asMilliseconds()),
+        timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.totaltime.asMilliseconds()),
         time: action.payload
       }
     }
@@ -32,8 +32,7 @@ export default function reducer(state={
         ...state,
         timebar: Math.floor((time.asMilliseconds() * state.totalBar) / totaltime.asMilliseconds()),
         time: time,
-        // TODO: Cambiar maxTime ---> totaltime
-        maxTime: totaltime
+        totaltime: totaltime
       }
     }
     case 'FETCH_CONTROLS_FULFILLED': {

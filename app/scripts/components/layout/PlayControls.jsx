@@ -12,15 +12,13 @@ import { ExecuteAction, Seek, FetchTimebar, FetchControls } from '../../actions/
 
 import '~/styles/_playControls'
 
-import Kodi from '~/scripts/lib/kodi/kodi' // TODO: Cambiar kodi por index
-
 @connect((store) => {
   return {
     PlayPauseIcon: store.playControls.PlayPauseIcon,
     timebar: store.playControls.timebar,
     totalBar: store.playControls.totalBar,
     time: store.playControls.time,
-    maxTime: store.playControls.maxTime
+    totaltime: store.playControls.totaltime
   }
 })
 export default class PlayControls extends React.Component {

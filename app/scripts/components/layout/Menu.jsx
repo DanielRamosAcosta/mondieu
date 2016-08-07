@@ -10,9 +10,17 @@ import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
 import '~/styles/_menu'
 
-// import LangStore from '~/scripts/stores/LangStore'
+// TODO: Validate all props in all components
 
 export default class Menu extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  }
+
+  static PropTypes = {
+    location: React.PropTypes.object.isRequired
+  }
+
   constructor (props, context) {
     super(props, context)
 
@@ -24,7 +32,6 @@ export default class Menu extends React.Component {
       'settings'
     ]
 
-    this.getLang = this.getLang.bind(this)
     this.state = {
       lang: {
         "page": {
@@ -35,25 +42,8 @@ export default class Menu extends React.Component {
           "settings": "Settings"
         }
       },
-      // LangStore.getLang(),
       open: false
     }
-  }
-
-  getLang () {
-    /*
-    this.setState({
-      lang: LangStore.getLang()
-    })
-    */
-  }
-
-  componentWillMount () {
-    // LangStore.on('change', this.getLang)
-  }
-
-  componentWillUnmount () {
-    // LangStore.removeListener('change', this.getLang)
   }
 
   toggleDrawer () {
@@ -97,7 +87,7 @@ export default class Menu extends React.Component {
 
   render () {
     const { location } = this.props
-
+    // FIXME: When changed in drawer, change tabs also.
     return (
       <div>
         <AppBar
@@ -124,13 +114,4 @@ export default class Menu extends React.Component {
       </div>
     )
   }
-}
-
-// TODO: Change into static
-Menu.contextTypes = {
-  router: React.PropTypes.object.isRequired
-}
-
-Menu.PropTypes = {
-  location: React.PropTypes.object.isRequired
 }
