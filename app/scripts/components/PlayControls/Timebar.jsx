@@ -4,13 +4,6 @@ import Slider from 'material-ui/Slider'
 import '~/styles/_timebar'
 
 export default class Timebar extends React.Component {
-  constructor () {
-    super()
-    this.styles = {
-      marginTop: 15,
-      marginBottom: 0
-    }
-  }
   render () {
     return (
       <Slider

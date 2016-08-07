@@ -1,11 +1,11 @@
 import Kodi from '~/scripts/lib/kodi/kodi' // TODO: Cambiar kodi por index
 
-import { ExecuteAction, Seek, GetTimebarState } from '~/scripts/actions/playControlActions'
+import { ExecuteAction, Seek, FetchTimebar } from '~/scripts/actions/playControlActions'
 
 const kodiMiddleware = (() => {
   let kodi = new Kodi('localhost')
   let firstTime = true
-  let intervalVirtualSeek = false
+  let intervalVirtualSeek = null
 
   const OnPlay = store => evt => {
     store.dispatch(ExecuteAction('play', 'kodi'))
@@ -25,12 +25,10 @@ const kodiMiddleware = (() => {
   }
 
   const VirtualSeek = (store, turnOn) => {
-    console.log('Enviar accion de cambio de tiempo')
     if (turnOn) {
       intervalVirtualSeek = setInterval(() => {
-        kodi.Player.GetActivePlayers().then(players => {
-          if (players.length >= 1) {
-            let { playerid } = players[0]
+        getPlayerId().then(playerid => {
+          if (playerid !== null) {
             kodi.Player.GetProperties(playerid, 'time').then(time => {
               store.dispatch(Seek(time, 'kodi'))
             })
@@ -42,6 +40,18 @@ const kodiMiddleware = (() => {
     }
   }
 
+  const getPlayerId = () => {
+    return new Promise((resolve, reject) => {
+      kodi.Player.GetActivePlayers().then(players => {
+        if (players.length >= 1) {
+          resolve(players[0].playerid)
+        } else {
+          resolve(null)
+        }
+      })
+    })
+  }
+
   const bindEvents = store => {
     kodi.Player.OnPlay(OnPlay(store))
     kodi.Player.OnPause(OnPause(store))
@@ -50,6 +60,11 @@ const kodiMiddleware = (() => {
   }
 
   return store => next => action => {
+    if (firstTime) {
+      bindEvents(store)
+      firstTime = false
+    }
+
     if (action.payload && (action.payload.origin === 'kodi')) {
       // TODO: change to a switch
       if (action.type === 'SEEK') {
@@ -61,7 +76,7 @@ const kodiMiddleware = (() => {
           case 'play': {
             console.log('Activar setInterval')
             VirtualSeek(store, true)
-            store.dispatch(GetTimebarState())
+            store.dispatch(FetchTimebar())
             break
           }
           case 'stop': {
@@ -81,30 +96,24 @@ const kodiMiddleware = (() => {
       return next(action)
     }
 
-    if (firstTime) {
-      bindEvents(store)
-      firstTime = false
-    }
-
     switch (action.type) {
       case 'EXECUTE_ACTION': {
         kodi.Input.ExecuteAction(action.payload.action)
         return
       }
       case 'SEEK': {
-        kodi.Player.GetActivePlayers().then(players => {
-          if (players.length >= 1) {
-            let { playerid } = players[0]
+        getPlayerId().then(playerid => {
+          if (playerid !== null) {
             kodi.Player.Seek(playerid, action.payload.time)
           }
         })
         return
       }
       case 'FETCH_TIMEBAR': {
-        let p1 = new Promise((resolve, reject) => {
-          kodi.Player.GetActivePlayers().then(players => {
-            if (players.length >= 1) {
-              let { playerid } = players[0]
+        action.payload = new Promise((resolve, reject) => {
+          getPlayerId().then(playerid => {
+            if (playerid !== null) {
+              console.log(playerid)
               kodi.Player.GetProperties(playerid, 'totaltime').then(totaltime => {
                 kodi.Player.GetProperties(playerid, 'time').then(time => {
                   resolve({time, totaltime})
@@ -113,14 +122,12 @@ const kodiMiddleware = (() => {
             }
           })
         })
-        action.payload = p1
         return next(action)
       }
       case 'FETCH_CONTROLS': {
-        let p1 = new Promise((resolve, reject) => {
-          kodi.Player.GetActivePlayers().then(players => {
-            if (players.length >= 1) {
-              let { playerid } = players[0]
+        action.payload = new Promise((resolve, reject) => {
+          getPlayerId().then(playerid => {
+            if (playerid !== null) {
               kodi.Player.GetProperties(playerid, 'speed').then(speed => {
                 if (speed) {
                   VirtualSeek(store, true)
@@ -136,7 +143,6 @@ const kodiMiddleware = (() => {
             }
           })
         })
-        action.payload = p1
         return next(action)
       }
       default:

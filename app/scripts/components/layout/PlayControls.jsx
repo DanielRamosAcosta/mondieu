@@ -8,7 +8,7 @@ import Icon from 'react-fontawesome'
 import Timebar from '~/scripts/components/PlayControls/Timebar'
 
 import { connect } from 'react-redux'
-import { ExecuteAction, Seek, GetTimebarState, FetchControls } from '../../actions/playControlActions'
+import { ExecuteAction, Seek, FetchTimebar, FetchControls } from '../../actions/playControlActions'
 
 import '~/styles/_playControls'
 
@@ -31,35 +31,10 @@ export default class PlayControls extends React.Component {
   }
 
   componentWillMount () {
-    /*
-    ControlStore.on('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
-    ControlStore.on('OnPlay', this.OnPlay.bind(this))
-    ControlStore.on('OnPause', this.OnPause.bind(this))
-    ControlStore.on('OnStop', this.OnStop.bind(this))*/
     console.log(this.props)
-    this.props.dispatch(GetTimebarState())
+    this.props.dispatch(FetchTimebar())
     this.props.dispatch(FetchControls())
-    // document.addEventListener('keydown', this.conmutePlayPause.bind(this), false)
   }
-  /*
-  componentWillUnmount () {
-    ControlStore.removeListener('OnNewCurrentTime', this.OnNewCurrentTime.bind(this))
-    ControlStore.removeListener('OnPlay', this.OnPlay.bind(this))
-    ControlStore.removeListener('OnPause', this.OnPause.bind(this))
-    ControlStore.removeListener('OnStop', this.OnStop.bind(this))
-    // document.removeEventListener('keydown', this.conmutePlayPause.bind(this), false)
-  }
-
-  OnNewCurrentTime () {
-    // let time = ControlStore.getCurrentPlayTime()
-    if (!this.movingTimebar) {
-      let time = ControlStore.state.currentTime
-      let max = ControlStore.state.totalTime
-      this.setState({
-        timebar: Math.floor((time.asMilliseconds() * this.totalBar) / max.asMilliseconds())
-      })
-    }
-  }*/
 
   interactionPlayPause () {
    this.props.dispatch(ExecuteAction(this.props.PlayPauseIcon))
@@ -70,7 +45,6 @@ export default class PlayControls extends React.Component {
   }
 
   interactionTimebar () {
-    // ControlActions.OnSeek()
     this.props.dispatch(Seek((this.timebar * 100) / this.props.totalBar))
   }
 
