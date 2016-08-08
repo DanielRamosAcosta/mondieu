@@ -1,22 +1,23 @@
 import moment from 'moment'
 
 export default function reducer(state={
-  PlayPauseIcon: 'play',
+  playing: false,
   timebar: 0,
   totalBar: 2000,
   time: moment.duration(0),
-  totaltime: moment.duration(0)
+  totaltime: moment.duration(0),
+  hidden: true
 }, action) {
   switch (action.type) {
     case 'EXECUTE_ACTION': {
       if (action.payload === 'play') {
-        return {...state, PlayPauseIcon: 'pause'}
+        return {...state, playing: true, hidden: false}
       }
       if (action.payload === 'pause') {
-        return {...state, PlayPauseIcon: 'play'}
+        return {...state, playing: false, hidden: false}
       }
       if (action.payload === 'stop') {
-        return {...state, PlayPauseIcon: 'play', timebar: 0}
+        return {...state, playing: false, timebar: 0, hidden: true}
       }
     }
     case 'SEEK': {
@@ -37,14 +38,13 @@ export default function reducer(state={
     }
     case 'FETCH_CONTROLS_FULFILLED': {
       if (action.payload === 'pause') {
-        return {...state, PlayPauseIcon: 'play'}
+        return {...state, playing: false, hidden: false}
       }
       if (action.payload === 'play') {
-        return {...state, PlayPauseIcon: 'pause'}
+        return {...state, playing: true, hidden: false}
       }
       if (action.payload === 'stop') {
-        // TODO: Hide controls: true
-        return {...state, PlayPauseIcon: 'play', timebar: 0}
+        return {...state, playing: false, timebar: 0, hidden: true}
       }
     }
   }

@@ -2,6 +2,8 @@ import React from 'react'
 
 import _ from 'lodash'
 
+// TODO: Cambiar this.-------.bind(this) por this::this.------
+
 import AppBar from 'material-ui/AppBar'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import IconButton from 'material-ui/IconButton'

@@ -23,7 +23,7 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
 
 ReactDOM.render(
-  // TODO: see if we can switch to browserHistory
+  // TODO: Averiguar si el Kodi soporta el browserHistory api fallback
   <Provider store={store} >
     <MuiThemeProvider>
       <Router history={browserHistory}>
