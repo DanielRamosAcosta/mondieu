@@ -1,3 +1,5 @@
+/*
+
 export function ExecuteAction (action, origin) {
   return {
     type: 'EXECUTE_ACTION',
@@ -25,3 +27,5 @@ export function FetchTimebar () {
     payload: null
   }
 }
+
+*/

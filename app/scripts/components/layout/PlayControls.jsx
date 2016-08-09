@@ -13,6 +13,7 @@ import '~/styles/_playControls'
 
 @connect((store) => {
   return {
+    connected: store.playControls.connected,
     playing: store.playControls.playing,
     timebar: store.playControls.timebar,
     totalBar: store.playControls.totalBar,
@@ -30,8 +31,18 @@ export default class PlayControls extends React.Component {
   }
 
   componentWillMount () {
-    this.props.dispatch(FetchTimebar())
-    this.props.dispatch(FetchControls())
+    console.log(this.props)
+    // this.props.dispatch(FetchTimebar())
+    // this.props.dispatch(FetchControls())
+  }
+
+  componentWillReceiveProps (props) {
+    console.log(props)
+    if (props.connected === true) {
+      // TODO: inicializar lo que sea necesario (timeline y controles)
+      // FETCH_TIME
+      // FETCH_CONTROLS
+    }
   }
 
   interactionTimebar (percentage) {

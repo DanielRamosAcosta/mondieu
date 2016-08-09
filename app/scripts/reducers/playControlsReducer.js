@@ -1,6 +1,7 @@
 import moment from 'moment'
 
 export default function reducer(state={
+  connected: false,
   playing: false,
   timebar: 0,
   totalBar: 2000,
@@ -8,7 +9,12 @@ export default function reducer(state={
   totaltime: moment.duration(0),
   hidden: true
 }, action) {
+  console.log(action)
+  console.log(action.type)
   switch (action.type) {
+    case 'KODI_CONNECT_FULFILLED': {
+      return {...state, connected: true}
+    }
     case 'EXECUTE_ACTION': {
       if (action.payload === 'play') {
         return {...state, playing: true, hidden: false}

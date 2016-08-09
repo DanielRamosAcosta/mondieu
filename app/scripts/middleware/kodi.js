@@ -1,8 +1,11 @@
 import Kodi from '~/scripts/lib/kodi'
+import Kodi2 from 'kodi-ws'
 
-import { ExecuteAction, Seek, FetchTimebar } from '~/scripts/actions/playControlActions'
+// import { ExecuteAction, Seek, FetchTimebar } from '~/scripts/actions/playControlActions'
 
 const kodiMiddleware = (() => {
+  let connection
+  /*
   let kodi = new Kodi('localhost')
   let firstTime = true
   let intervalVirtualSeek = null
@@ -60,9 +63,10 @@ const kodiMiddleware = (() => {
     kodi.Player.OnPause(OnPause(store))
     kodi.Player.OnStop(OnStop(store))
     kodi.Player.OnSeek(OnSeek(store))
-  }
+  }*/
 
-  return store => next => action => {
+  return store => next => action => {/*
+    console.log(action)
     if (firstTime) {
       bindEvents(store)
       firstTime = false
@@ -95,8 +99,16 @@ const kodiMiddleware = (() => {
       }
       return next(action)
     }
-
+    */
     switch (action.type) {
+      case 'KODI_CONNECT': {
+        action.payload = Kodi2(/* TODO: poner aqui la ip y puertos reales */).then((conn) => {
+          connection = conn
+          console.log(connection)
+        })
+        break
+      }
+      /*
       case 'EXECUTE_ACTION': {
         kodi.Input.ExecuteAction(action.payload.action)
         return
@@ -143,7 +155,7 @@ const kodiMiddleware = (() => {
           })
         })
         break
-      }
+      }*/
     }
     return next(action)
   }
