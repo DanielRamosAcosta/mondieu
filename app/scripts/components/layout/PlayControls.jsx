@@ -8,6 +8,7 @@ import TimePassedDuration from '~/scripts/components/PlayControls/TimePassedDura
 
 import { connect } from 'react-redux'
 import { ExecuteAction, Seek, FetchTimebar, FetchControls } from '../../actions/playControlActions'
+import { fetchControls, fetchTime, executeAction } from '~/scripts/actions/kodiActions'
 
 import '~/styles/_playControls'
 
@@ -38,10 +39,15 @@ export default class PlayControls extends React.Component {
 
   componentWillReceiveProps (props) {
     console.log(props)
-    if (props.connected === true) {
-      // TODO: inicializar lo que sea necesario (timeline y controles)
-      // FETCH_TIME
-      // FETCH_CONTROLS
+    console.log(this.props)
+    if (this.props.connected !== props.connected) {
+      if (props.connected === true) {
+        console.log('Acabamos de conectarnos')
+        // TODO: inicializar lo que sea necesario (timeline y controles)
+        this.props.dispatch(fetchTime())
+        this.props.dispatch(fetchControls())
+        // FETCH_CONTROLS
+      }
     }
   }
 
@@ -59,9 +65,9 @@ export default class PlayControls extends React.Component {
           <Controls
             class='playControls'
             playing={this.props.playing}
-            onPause={() => this.props.dispatch(ExecuteAction('pause'))}
-            onPlay={() => this.props.dispatch(ExecuteAction('play'))}
-            onStop={() => this.props.dispatch(ExecuteAction('stop'))}
+            onPause={() => this.props.dispatch(executeAction('pause'))}
+            onPlay={() => this.props.dispatch(executeAction('play'))}
+            onStop={() => this.props.dispatch(executeAction('stop'))}
           />
         </Col>
         <Col xs={6} smPush={7} sm={2}>

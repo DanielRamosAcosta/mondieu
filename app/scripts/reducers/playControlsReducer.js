@@ -7,13 +7,22 @@ export default function reducer(state={
   totalBar: 2000,
   time: moment.duration(0),
   totaltime: moment.duration(0),
-  hidden: true
+  hidden: false
 }, action) {
   console.log(action)
   console.log(action.type)
   switch (action.type) {
     case 'KODI_CONNECT_FULFILLED': {
       return {...state, connected: true}
+    }
+    case 'FETCH_TIME_FULFILLED': {
+      console.log(action.payload)
+      return {
+        ...state,
+        timebar: Math.floor((action.payload.time.asMilliseconds() * state.totalBar) / action.payload.totaltime.asMilliseconds()),
+        time: action.payload.time,
+        totaltime: action.payload.totaltime
+      }
     }
     case 'EXECUTE_ACTION': {
       if (action.payload === 'play') {
@@ -31,15 +40,6 @@ export default function reducer(state={
         ...state,
         timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.totaltime.asMilliseconds()),
         time: action.payload
-      }
-    }
-    case 'FETCH_TIMEBAR_FULFILLED': {
-      let { time, totaltime } = action.payload
-      return {
-        ...state,
-        timebar: Math.floor((time.asMilliseconds() * state.totalBar) / totaltime.asMilliseconds()),
-        time: time,
-        totaltime: totaltime
       }
     }
     case 'FETCH_CONTROLS_FULFILLED': {

@@ -4,8 +4,21 @@ export function connect () {
   }
 }
 
-export function test () {
+export function fetchTime () {
   return {
-    type: 'KODI_TEST'
+    type: 'FETCH_TIME'
+  }
+}
+
+export function fetchControls () {
+  return {
+    type: 'FETCH_CONTROLS'
+  }
+}
+
+export function executeAction (action, origin) {
+  return {
+    type: 'EXECUTE_ACTION',
+    payload: { action, origin }
   }
 }
