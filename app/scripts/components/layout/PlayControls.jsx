@@ -1,16 +1,19 @@
 import React from 'react'
+import moment from 'moment'
 
+// External components
 import { Navbar, Col } from 'react-bootstrap'
 
+// Custom components
 import Timeline from '~/scripts/components/PlayControls/Timeline'
 import Controls from '~/scripts/components/PlayControls/Controls'
 import TimePassedDuration from '~/scripts/components/PlayControls/TimePassedDuration'
-import moment from 'moment'
 
+// Redux stuff
 import { connect } from 'react-redux'
-import { ExecuteAction, FetchTimebar, FetchControls } from '../../actions/playControlActions'
 import { fetchControls, fetchTime, executeAction, seek } from '~/scripts/actions/kodiActions'
 
+// Styles
 import '~/styles/_playControls'
 
 @connect((store) => {
@@ -26,38 +29,34 @@ export default class PlayControls extends React.Component {
   constructor () {
     super()
     this.state = {
-      actualTotal: 0,
       timelineVal: 0
     }
     this.timelineTotal = 2000
   }
 
-  componentWillMount () {
-    console.log(this.props)
-    // this.props.dispatch(FetchTimebar())
-    // this.props.dispatch(FetchControls())
-  }
-
   componentWillReceiveProps (props) {
-    console.log(props)
-    console.log(this.props)
     if (this.props.connected !== props.connected) {
       if (props.connected === true) {
-        console.log('Acabamos de conectarnos')
-        // TODO: inicializar lo que sea necesario (timeline y controles)
         this.props.dispatch(fetchTime())
         this.props.dispatch(fetchControls())
-        // FETCH_CONTROLS
       }
     }
+
+    let nowms = props.time.asMilliseconds()
+    let maxms = props.totaltime.asMilliseconds()
+    let maxpt = this.timelineTotal
+    let nowpt = Math.floor((nowms * maxpt) / maxms)
+
+    if(isNaN(nowpt))
+      nowpt = 0
+
     this.setState({
-      timelineVal: Math.floor((props.time.asMilliseconds() * this.timelineTotal) / props.totaltime.asMilliseconds())
+      timelineVal: nowpt
     })
   }
 
   interactionTimebar (percentage) {
     let newtime = moment.duration({milliseconds: (this.props.totaltime.asMilliseconds() * percentage)/100})
-    console.log(`${newtime.hours()}:${newtime.minutes()}:${newtime.seconds()}`)
     this.props.dispatch(seek(newtime))
   }
 
@@ -65,6 +64,8 @@ export default class PlayControls extends React.Component {
     let { time, totaltime } = this.props
     let className = this.props.className || 'navPlayControls'
     // TODO: Averiguar como transitar el hidden
+
+    console.log(`${this.state.timelineVal}/${this.timelineTotal}`)
     return (
       <Navbar hidden={this.props.hidden} fixedBottom class={`text-center ${className}`}>
         <Col xs={6} sm={3}>
@@ -84,9 +85,9 @@ export default class PlayControls extends React.Component {
         </Col>
         <Col xs={12} smPull={2} sm={7}>
           <Timeline
-            value={this.state.timelineVal}
             min={0}
             max={this.timelineTotal}
+            value={this.state.timelineVal}
             onChange={this::this.interactionTimebar}
           />
         </Col>
