@@ -22,3 +22,10 @@ export function executeAction (action, origin) {
     payload: { action, origin }
   }
 }
+
+export function seek (time, origin) {
+  return {
+    type: 'SEEK',
+    payload: { time, origin }
+  }
+}

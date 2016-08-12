@@ -38,7 +38,7 @@ export default function reducer(state={
     case 'SEEK': {
       return {
         ...state,
-        timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.totaltime.asMilliseconds()),
+        // timebar: Math.floor((action.payload.asMilliseconds() * state.totalBar) / state.totaltime.asMilliseconds()),
         time: action.payload
       }
     }

@@ -5,30 +5,31 @@ import { Navbar, Col } from 'react-bootstrap'
 import Timeline from '~/scripts/components/PlayControls/Timeline'
 import Controls from '~/scripts/components/PlayControls/Controls'
 import TimePassedDuration from '~/scripts/components/PlayControls/TimePassedDuration'
+import moment from 'moment'
 
 import { connect } from 'react-redux'
-import { ExecuteAction, Seek, FetchTimebar, FetchControls } from '../../actions/playControlActions'
-import { fetchControls, fetchTime, executeAction } from '~/scripts/actions/kodiActions'
+import { ExecuteAction, FetchTimebar, FetchControls } from '../../actions/playControlActions'
+import { fetchControls, fetchTime, executeAction, seek } from '~/scripts/actions/kodiActions'
 
 import '~/styles/_playControls'
 
 @connect((store) => {
   return {
     connected: store.playControls.connected,
+    hidden: store.playControls.hidden,
     playing: store.playControls.playing,
-    timebar: store.playControls.timebar,
-    totalBar: store.playControls.totalBar,
     time: store.playControls.time,
-    totaltime: store.playControls.totaltime,
-    hidden: store.playControls.hidden
+    totaltime: store.playControls.totaltime
   }
 })
 export default class PlayControls extends React.Component {
   constructor () {
     super()
     this.state = {
-      actualTotal: 0
+      actualTotal: 0,
+      timelineVal: 0
     }
+    this.timelineTotal = 2000
   }
 
   componentWillMount () {
@@ -49,10 +50,15 @@ export default class PlayControls extends React.Component {
         // FETCH_CONTROLS
       }
     }
+    this.setState({
+      timelineVal: Math.floor((props.time.asMilliseconds() * this.timelineTotal) / props.totaltime.asMilliseconds())
+    })
   }
 
   interactionTimebar (percentage) {
-    this.props.dispatch(Seek(percentage))
+    let newtime = moment.duration({milliseconds: (this.props.totaltime.asMilliseconds() * percentage)/100})
+    console.log(`${newtime.hours()}:${newtime.minutes()}:${newtime.seconds()}`)
+    this.props.dispatch(seek(newtime))
   }
 
   render () {
@@ -78,11 +84,10 @@ export default class PlayControls extends React.Component {
         </Col>
         <Col xs={12} smPull={2} sm={7}>
           <Timeline
-            value={this.props.timebar}
+            value={this.state.timelineVal}
             min={0}
-            max={this.props.totalBar}
+            max={this.timelineTotal}
             onChange={this::this.interactionTimebar}
-            onInput={val => { this.setState({actualTotal: val}) } }
           />
         </Col>
       </Navbar>
