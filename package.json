@@ -89,5 +89,8 @@
     "webpack-dev-server": "1.14.1",
     "webpack-stream": "3.2.0",
     "zip-folder": "1.0.0"
+  },
+  "addon": {
+    "name": "webinterface.mondieu"
   }
 }
