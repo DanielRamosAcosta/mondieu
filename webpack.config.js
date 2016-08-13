@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const manifest = require('./package.json')
 
-if (!global.server) {
+if (global.server == null) {
   global.server = process.argv.toString().match(/webpack-dev-server/g) !== null
 }
 
@@ -13,9 +13,12 @@ if (global.server) { // If server mode, debug mode activated
   global.debug = true
 }
 
-if (!global.debug) {
+if (global.debug == null) {
   global.debug = process.env.NODE_ENV !== 'production'
 }
+
+console.log(`Debug mode: ${global.debug}`)
+console.log(`Server mode: ${global.server}`)
 
 // Default production configuration
 
@@ -66,7 +69,8 @@ let config = {
     ]
   },
   output: {
-    path: path.join(__dirname, `${manifest.addon.name}/${manifest.addon.name}`),
+    // path: path.join(__dirname, `${manifest.addon.name}/${manifest.addon.name}`),
+    path: path.join(__dirname, 'dist'),
     filename: 'main.js'
   },
   plugins: [
