@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "autoprefixer": "6.4.0",
+    "babel-eslint": "^6.1.2",
     "babel-polyfill": "6.13.0",
     "bootstrap-sass": "3.3.7",
     "flux": "2.1.1",
@@ -68,10 +69,10 @@
     "babel-preset-stage-0": "6.5.0",
     "babel-project-relative-import": "2.0.0",
     "css-loader": "0.23.1",
-    "del": "2.2.1",
+    "del": "^2.2.2",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
-    "gulp": "3.9.1",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-rename": "1.2.2",
     "gulp-standard": "7.0.1",
     "gulp-stats": "0.0.3",
@@ -81,10 +82,11 @@
     "json-loader": "0.5.4",
     "mkdirp": "0.5.1",
     "node-sass": "3.8.0",
-    "postcss-loader": "0.9.1",
+    "postcss-loader": "^0.10.0",
     "run-sequence": "1.2.2",
     "sass-loader": "4.0.0",
     "style-loader": "0.13.1",
+    "vinyl-paths": "^2.1.0",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1",
     "webpack-stream": "3.2.0",
@@ -92,5 +94,8 @@
   },
   "addon": {
     "name": "webinterface.mondieu"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
