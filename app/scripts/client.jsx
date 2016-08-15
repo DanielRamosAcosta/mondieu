@@ -14,7 +14,7 @@ import Music from '~/scripts/pages/Music'
 import TVShows from '~/scripts/pages/TVShows'
 import Settings from '~/scripts/pages/Settings'
 
-import '~/styles/Bootstrap'
+import 'bootstrap-loader'
 import 'font-awesome/css/font-awesome.css'
 import '~/styles/common'
 

@@ -17,9 +17,6 @@ if (global.debug == null) {
   global.debug = process.env.NODE_ENV !== 'production'
 }
 
-console.log(`Debug mode: ${global.debug}`)
-console.log(`Server mode: ${global.server}`)
-
 // Default production configuration
 
 let config = {
@@ -76,6 +73,10 @@ let config = {
   plugins: [
     new ExtractTextPlugin('main.css'),
     new HtmlWebpackPlugin({template: 'index.html'}),
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+    }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
@@ -108,7 +109,7 @@ let config = {
 if (global.debug) {
   config.debug = true
   config.devtool = 'inline-sourcemap'
-  config.plugins = [config.plugins[0], config.plugins[1]]
+  config.plugins = [config.plugins[0], config.plugins[1], config.plugins[2]]
   config.output.path = path.join(__dirname, 'dist')
 }
 
