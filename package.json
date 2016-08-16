@@ -5,10 +5,10 @@
   "main": "src/scripts/client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp",
     "release": "gulp release",
-    "dev": "gulp dev",
-    "build": "gulp build",
-    "clean": "gulp clean"
+    "clean": "gulp clean",
+    "lint": "gulp lint"
   },
   "repository": {
     "type": "git",
@@ -33,12 +33,13 @@
   },
   "dependencies": {
     "autoprefixer": "6.4.0",
+    "babel-eslint": "6.1.2",
     "babel-polyfill": "6.13.0",
     "bootstrap-sass": "3.3.7",
-    "flux": "2.1.1",
     "font-awesome": "4.6.3",
     "history": "3.0.0",
-    "kodi-ws": "git+https://git@github.com/DanielRamosAcosta/kodi-ws.git",
+    "jquery": "3.1.0",
+    "kodi-ws": "github:DanielRamosAcosta/kodi-ws",
     "lockr": "0.8.4",
     "lodash": "4.15.0",
     "material-ui": "0.15.4",
@@ -67,11 +68,12 @@
     "babel-preset-react": "6.11.1",
     "babel-preset-stage-0": "6.5.0",
     "babel-project-relative-import": "2.0.0",
+    "bootstrap-loader": "1.2.0-beta.1",
     "css-loader": "0.23.1",
-    "del": "2.2.1",
+    "del": "2.2.2",
     "extract-text-webpack-plugin": "1.0.1",
     "file-loader": "0.9.0",
-    "gulp": "3.9.1",
+    "gulp": "github:gulpjs/gulp#4.0",
     "gulp-rename": "1.2.2",
     "gulp-standard": "7.0.1",
     "gulp-stats": "0.0.3",
@@ -79,15 +81,20 @@
     "gulp-zip": "3.2.0",
     "html-webpack-plugin": "2.22.0",
     "json-loader": "0.5.4",
-    "mkdirp": "0.5.1",
     "node-sass": "3.8.0",
-    "postcss-loader": "0.9.1",
-    "run-sequence": "1.2.2",
+    "postcss-loader": "0.10.0",
+    "resolve-url-loader": "1.6.0",
     "sass-loader": "4.0.0",
     "style-loader": "0.13.1",
+    "url-loader": "0.5.7",
     "webpack": "1.13.1",
     "webpack-dev-server": "1.14.1",
-    "webpack-stream": "3.2.0",
-    "zip-folder": "1.0.0"
+    "webpack-stream": "3.2.0"
+  },
+  "addon": {
+    "name": "webinterface.mondieu"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
