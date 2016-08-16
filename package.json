@@ -5,10 +5,10 @@
   "main": "src/scripts/client.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp",
     "release": "gulp release",
-    "dev": "gulp dev",
-    "build": "gulp build",
-    "clean": "gulp clean"
+    "clean": "gulp clean",
+    "lint": "gulp lint"
   },
   "repository": {
     "type": "git",

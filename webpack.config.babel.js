@@ -1,9 +1,9 @@
-const webpack = require('webpack')
-const path = require('path')
-const autoprefixer = require('autoprefixer')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const manifest = require('./package.json')
+import webpack from 'webpack'
+import path from 'path'
+import autoprefixer from 'autoprefixer'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import HtmlWebpackPlugin from 'html-webpack-plugin'
+import manifest from './package.json'
 
 if (global.server == null) {
   global.server = process.argv.toString().match(/webpack-dev-server/g) !== null
@@ -74,9 +74,32 @@ let config = {
     new ExtractTextPlugin('main.css'),
     new HtmlWebpackPlugin({template: 'index.html'}),
     new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery'
-    }),
+      $: 'jquery',
+      jQuery: 'jquery'
+    })
+  ],
+  postcss: [
+    autoprefixer({
+      browsers: ['last 2 versions']
+    })
+  ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.sass'],
+    root: [path.join(__dirname, './app')]
+  }
+}
+
+// Debug mode modifications
+if (global.debug) {
+  config.debug = true
+  config.devtool = 'inline-sourcemap'
+  config.output.path = path.join(__dirname, 'dist')
+}
+
+// Production mode modifications
+
+if (!global.debug) {
+  config.plugins.concat([
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
@@ -92,25 +115,7 @@ let config = {
         NODE_ENV: JSON.stringify('production')
       }
     })
-  ],
-  postcss: [
-    autoprefixer({
-      browsers: ['last 2 versions']
-    })
-  ],
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.sass'],
-    root: [path.join(__dirname, './app')]
-  }
-}
-
-// Debug mode modifications
-
-if (global.debug) {
-  config.debug = true
-  config.devtool = 'inline-sourcemap'
-  config.plugins = [config.plugins[0], config.plugins[1], config.plugins[2]]
-  config.output.path = path.join(__dirname, 'dist')
+  ])
 }
 
 // Server mode modifications
@@ -123,4 +128,4 @@ if (global.server) {
   config.plugins.push(new webpack.HotModuleReplacementPlugin())
 }
 
-module.exports = config
+export default config

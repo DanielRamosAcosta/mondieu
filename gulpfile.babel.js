@@ -1,19 +1,20 @@
 import {src, dest, parallel, series} from 'gulp'
 import del from 'del'
 import standard from 'gulp-standard'
+import zip from 'gulp-zip'
 import webpack from 'webpack'
 import webpackStream from 'webpack-stream'
 import WebpackDevServer from 'webpack-dev-server'
-import zip from 'gulp-zip'
 
 import manifest from './package.json'
+const webpackConfigPath = './webpack.config.babel.js'
 
 export function clean () {
   return del(['dist'])
 }
 
 export function dev (done) {
-  let webpackConfig = require('./webpack.config.js')
+  let webpackConfig = require(webpackConfigPath).default
   let ip = process.env.IP || '0.0.0.0'
 
   new WebpackDevServer(webpack(webpackConfig), {
@@ -26,7 +27,7 @@ export function dev (done) {
 
 export function lint () {
   return src([
-    'webpack.config.js',
+    'webpack.config.babel.js',
     'gulpfile.babel.js',
     './app/**/*.js',
     './app/**/*.jsx'
@@ -43,7 +44,7 @@ function productionMode (done) {
 }
 
 function build () {
-  let webpackConfig = require('./webpack.config.js')
+  let webpackConfig = require(webpackConfigPath).default
 
   return src('app/scripts/client.jsx')
     .pipe(webpackStream(webpackConfig))
@@ -51,7 +52,7 @@ function build () {
 }
 
 function copyFiles () {
-  let webpackConfig = require('./webpack.config.js')
+  let webpackConfig = require(webpackConfigPath).default
   return src([
     './addon/*',
     './LICENSE.txt',
