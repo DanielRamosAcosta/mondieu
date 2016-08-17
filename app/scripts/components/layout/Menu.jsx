@@ -96,6 +96,7 @@ export default class Menu extends React.Component {
           title='Mondieu'
           iconElementLeft={<IconButton class='visible-xs' onClick={this.toggleDrawer.bind(this)}><NavigationMenu /></IconButton>}
           iconElementRight={this.getTabs(location.pathname)}
+          class='navigation-bar'
         />
         <Drawer
           open={this.state.open}

@@ -25,7 +25,7 @@ import '~/styles/_playControls'
     totaltime: store.playControls.totaltime
   }
 })
-export default class PlayControls extends React.Component {
+export default class PlayControls extends React.Component { // TODO: cuando se está reproduciendo, añadir padding al body
   constructor () {
     super()
     this.state = {

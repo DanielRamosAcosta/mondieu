@@ -27,7 +27,8 @@ export default class Layout extends React.Component {
     return (
       <div>
         <Menu location={location} history={history} />
-        <div class='container main'>
+
+        <div class='main'>
           <EasyTransition
             path={location.pathname}
             initialStyle={{opacity: 0}}

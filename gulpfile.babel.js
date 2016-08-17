@@ -14,6 +14,7 @@ export function clean () {
 }
 
 export function dev (done) {
+  global.server = true
   let webpackConfig = require(webpackConfigPath).default
   let ip = process.env.IP || '0.0.0.0'
 
