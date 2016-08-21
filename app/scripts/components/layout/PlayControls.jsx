@@ -65,7 +65,6 @@ export default class PlayControls extends React.Component { // TODO: cuando se e
     let className = this.props.className || 'navPlayControls'
     // TODO: Averiguar como transitar el hidden
 
-    console.log(`${this.state.timelineVal}/${this.timelineTotal}`)
     return (
       <Navbar hidden={this.props.hidden} fixedBottom class={`text-center ${className}`}>
         <Col xs={6} sm={3}>

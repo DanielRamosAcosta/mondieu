@@ -29,3 +29,10 @@ export function seek (time, origin) {
     payload: { time, origin }
   }
 }
+
+export function loadMore (cuantity, lastItem) {
+  return {
+    type: 'FETCH_MOVIES',
+    payload: { cuantity, lastItem }
+  }
+}
