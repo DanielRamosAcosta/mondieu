@@ -82,9 +82,22 @@ export default class Movies extends React.Component {
     }
   }
 
+  componentWillMount () {
+    if (this.props.connected !== this.props.connected) {
+      console.log(this.props.connected)
+      if (this.props.connected === true) {
+        console.log('Voy a pedir seis peliculas')
+        this.props.dispatch(loadMore(6, this.lastItem))
+        this.lastItem+=6
+      }
+    }
+  }
+
   componentWillReceiveProps (props) {
     if (this.props.connected !== props.connected) {
+      console.log(props.connected)
       if (props.connected === true) {
+        console.log('Voy a pedir seis peliculas')
         this.props.dispatch(loadMore(6, this.lastItem))
         this.lastItem+=6
       }

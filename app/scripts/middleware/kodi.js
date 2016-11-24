@@ -159,18 +159,21 @@ const kodiMiddleware = (() => {
           batch.send()
 
           Promise.all([movies, favourites]).then(function([ { movies }, { favourites } ]) {
+            console.log(favourites)
             movies.forEach(movie => {
               // 1. Set if movie is favorite
               movie.favorite = false
-              favourites.forEach(favorite => {
-                if(movie.title === favorite.title) {
-                  movie.favorite = true
-                  return
-                }
-              })
+              if (favourites) {
+                favourites.forEach(favorite => {
+                  if(movie.title === favorite.title) {
+                    movie.favorite = true
+                    return
+                  }
+                })
+              }
 
               // 2. Fix thumbnail
-              movie.thumbnail = movie.thumbnail.replace(/%3a/g, ':').replace(/%2f/g, '/').substring(8)
+              movie.thumbnail = movie.thumbnail.replace(/%3a/g, ':').replace(/%2f/g, '/').substring(8).slice(0, -1)
 
               // 3. Set if viewed
               movie.viewed = movie.playcount > 0
