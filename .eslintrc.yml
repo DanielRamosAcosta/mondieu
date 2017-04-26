@@ -1,0 +1,62 @@
+---
+parser: babel-eslint
+env:
+  browser: true
+  es6: true
+  jest: true
+extends:
+- eslint:recommended
+- airbnb
+- standard
+parserOptions:
+  ecmaFeatures:
+    experimentalObjectRestSpread: true
+    jsx: true
+  sourceType: module
+plugins:
+- react
+- smells
+- react-extra
+rules:
+  react/jsx-uses-react: error
+  react/jsx-uses-vars: error
+  no-console:
+    - error
+    - allow:
+        - info
+        - error
+  max-statements:
+  - error
+  - 10
+  max-depth: 2
+  complexity:
+  - error
+  - 3
+  max-len:
+  - error
+  - 120
+  max-params:
+  - error
+  - 3
+  arrow-parens:
+  - error
+  - as-needed
+  jsx-quotes:
+  - error
+  - prefer-single
+  no-confusing-arrow: 0
+  object-curly-spacing: 0
+  react/jsx-filename-extension: 0
+  react/jsx-wrap-multilines: 0
+  import/extensions: 0
+  smells/no-switch: 2
+  smells/no-complex-switch-case: 2
+  smells/no-setinterval: 2
+  smells/no-this-assign: 2
+  react-extra/no-inline-styles: 2
+  linebreak-style:
+  - error
+  - unix
+  no-multi-spaces: 0
+settings:
+  import/resolver: webpack
