@@ -2,3 +2,7 @@
 node_modules
 dist
 webinterface.mondieu
+*.mkv
+*.mp4
+*.avi
+.env
