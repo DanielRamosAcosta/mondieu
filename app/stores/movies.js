@@ -24,7 +24,7 @@ class MoviesStore {
       .then(({movies}) => movies.map(({movieid: id, thumbnail, ...data}) => ({
           ...data,
           id,
-          thumbnail: decodeURIComponent(thumbnail).match(/image:\/\/(.+)\//)[1]
+          thumbnail: thumbnail && decodeURIComponent(thumbnail).match(/image:\/\/(.+)\//)[1]
         }))
       )
     this.all.replace(movies)

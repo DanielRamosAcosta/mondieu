@@ -2,7 +2,10 @@ import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 
+import Layout from 'components/Layout'
 import Movie from 'components/Movie'
+
+//	.col-	.col-sm-	.col-md-	.col-lg-	.col-xl-
 
 @inject("store") @observer
 export default class Movies extends Component {
@@ -11,16 +14,16 @@ export default class Movies extends Component {
   }
 
   componentWillMount () {
-    this.props.store.movies.fetchMovies()
+    this.props.store && this.props.store.movies.fetchMovies()
   }
 
   render () {
     return (
-      <div>
-        {this.props.store.movies.all.map(movie =>
+      <Layout xs={6} sm={4} md={4} lg={2}>
+        {this.props.store && this.props.store.movies.all.map(movie =>
           <Movie key={movie.id} movie={movie}></Movie>
         )}
-      </div>
+      </Layout>
     )
   }
 }

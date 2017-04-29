@@ -11,7 +11,6 @@ module.exports = {
   ],
   output: {
     filename: 'bundle.js',
-    publicPath: '/oc2-ada/ui',
     path: resolve(__dirname, '../public')
   },
 
@@ -71,7 +70,7 @@ module.exports = {
 
       {
         test: /\.css$/,
-        include: /typeface-roboto/,
+        include: /flexboxgrid/,
         use: [
           {
             loader: 'style-loader',
@@ -81,18 +80,12 @@ module.exports = {
           }, {
             loader: 'css-loader',
             options: {
+              localIdentName: 'flx-[hash:base64]-[name]-[local]',
+              modules: true,
               sourceMap: true
             }
           }
         ]
-      },
-
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'public/fonts/[name].[ext]'
-        }
       }
     ]
   },
@@ -103,8 +96,7 @@ module.exports = {
       components: resolve(__dirname, '../app/components'),
       containers: resolve(__dirname, '../app/containers'),
       modules: resolve(__dirname, '../app/modules'),
-      utils: resolve(__dirname, '../app/utils'),
-      constants: resolve(__dirname, '../app/constants')
+      utils: resolve(__dirname, '../app/utils')
     }
   },
 

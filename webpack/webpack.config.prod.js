@@ -4,17 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const Visualizer = require('webpack-visualizer-plugin')
 
-const extractSass = new ExtractTextPlugin({
-  filename: 'main-[contenthash].css'
-})
+const common = require('./webpack.config.common.js')
 
-const extractFlexboxGrid = new ExtractTextPlugin({
-  filename: 'grid-[contenthash].css'
-})
+const extractSass = new ExtractTextPlugin({filename: 'main-[contenthash].css'})
 
-const extractRobotoFont = new ExtractTextPlugin({
-  filename: 'roboto-[contenthash].css'
-})
+const extractRobotoFont = new ExtractTextPlugin({filename: 'roboto-[contenthash].css'})
 
 module.exports = {
   entry: [
@@ -27,7 +21,7 @@ module.exports = {
     path: resolve(__dirname, '../public')
   },
 
-  context: resolve(__dirname, '../app'),
+  context: common.context,
 
   module: {
     rules: [
@@ -43,7 +37,8 @@ module.exports = {
             'react'
           ],
           plugins: [
-            'transform-decorators-legacy'
+            'transform-decorators-legacy',
+            ['transform-runtime', {polyfill: false, regenerator: true}]
           ]
         }
       },
@@ -88,16 +83,7 @@ module.exports = {
     ]
   },
 
-  resolve: {
-    extensions: ['.js', '.jsx', '.sass'],
-    alias: {
-      components: resolve(__dirname, '../app/components'),
-      containers: resolve(__dirname, '../app/containers'),
-      modules: resolve(__dirname, '../app/modules'),
-      utils: resolve(__dirname, '../app/utils'),
-      constants: resolve(__dirname, '../app/constants')
-    }
-  },
+  resolve: common.resolve,
 
   plugins: [
     new HtmlWebpackPlugin({
@@ -109,8 +95,7 @@ module.exports = {
       sourceMap: false
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production'),
-      'process.env.API_ENDPOINT': JSON.stringify('/TODOOOOOOO')
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
@@ -121,7 +106,6 @@ module.exports = {
       name: 'manifest'
     }),
     extractSass,
-    extractFlexboxGrid,
     new Visualizer()
   ]
 }

@@ -10,8 +10,8 @@ const config = require('./webpack.config.dev')
 const app = express()
 const compiler = webpack(config)
 
-const host =   process.env.HOST           || '0.0.0.0'
-const port =   process.env.PORT           || 8080
+const host = process.env.HOST || '0.0.0.0'
+const port = process.env.PORT || 8080
 
 const middleware = webpackDevMiddleware(compiler, {
   noInfo: true,
@@ -38,5 +38,5 @@ app.use((req, res) => {
 app.listen(port, host, err =>
   err
   ? console.error(err)
-  : console.info(`🚧  App is listening at http://${host}:${port}`)
+  : console.log(`🚧  App is listening at http://${host}:${port}`)
 )
