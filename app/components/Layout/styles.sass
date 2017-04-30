@@ -2,7 +2,7 @@ $breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
 
 $columns: 12
 $gap: 1em
-$max-width: 90em
+$max-width: 110em
 
 .layout
   display: grid
@@ -23,10 +23,13 @@ $max-width: 90em
   @for $i from 1 through $columns
     .layout-#{$breakpoint}-#{$i}
       @extend .layout
-      @media (min-width: map-get($breakpoints, $breakpoint))
-        @if $breakpoint == 'lg'
-          max-width: $max-width
+      @if $breakpoint == 'xs'
         grid-template-columns: get-column-distribution($i)
+      @else
+        @media (min-width: map-get($breakpoints, $breakpoint))
+          @if $breakpoint == 'lg'
+            max-width: $max-width
+          grid-template-columns: get-column-distribution($i)
 
 .container
   display: flex;

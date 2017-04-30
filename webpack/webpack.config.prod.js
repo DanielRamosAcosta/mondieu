@@ -2,13 +2,11 @@ const { resolve } = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const Visualizer = require('webpack-visualizer-plugin')
+// const Visualizer = require('webpack-visualizer-plugin')
 
 const common = require('./webpack.config.common.js')
 
 const extractSass = new ExtractTextPlugin({filename: 'main-[contenthash].css'})
-
-const extractRobotoFont = new ExtractTextPlugin({filename: 'roboto-[contenthash].css'})
 
 module.exports = {
   entry: [
@@ -64,21 +62,19 @@ module.exports = {
 
       {
         test: /\.css$/,
-        include: /typeface-roboto/,
-        use: extractRobotoFont.extract({
-          use: [{
-            loader: 'css-loader'
-          }],
-          fallback: 'style-loader'
-        })
-      },
-
-      {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
-        loader: 'file-loader',
-        options: {
-          name: 'fonts/[name].[ext]'
-        }
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true
+            }
+          }, {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
       }
     ]
   },
@@ -106,6 +102,6 @@ module.exports = {
       name: 'manifest'
     }),
     extractSass,
-    new Visualizer()
+    //new Visualizer()
   ]
 }

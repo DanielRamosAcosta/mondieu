@@ -69,25 +69,7 @@ module.exports = {
       },
 
       {
-        test: /\.(css|less)$/,
-        use: [
-          {
-            loader: 'style-loader',
-            options: {
-              sourceMap: true
-            }
-          }, {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true
-            }
-          }
-        ]
-      },
-
-      {
         test: /\.css$/,
-        include: /flexboxgrid/,
         use: [
           {
             loader: 'style-loader',
@@ -97,8 +79,6 @@ module.exports = {
           }, {
             loader: 'css-loader',
             options: {
-              localIdentName: 'flx-[hash:base64]-[name]-[local]',
-              modules: true,
               sourceMap: true
             }
           }

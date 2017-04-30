@@ -6,7 +6,6 @@ function getClassNames (sizes) {
   let className = ''
   Object.keys(sizes).forEach(key => {
     if(!sizes[key]) return
-    console.log('Busco', `layout-${key}-${sizes[key]}`)
     className += styles[`layout-${key}-${sizes[key]}`] + ' '
   })
   return className

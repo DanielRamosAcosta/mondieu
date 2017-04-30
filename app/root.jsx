@@ -4,8 +4,8 @@ import { AppContainer } from 'react-hot-loader'
 
 import RootApp from './containers/App'
 
-import { Provider } from 'mobx-react'
-import store from './stores'
+import { Provider } from 'react-redux'
+import store from './store'
 
 import './styles/global'
 import 'antd/dist/antd.css'

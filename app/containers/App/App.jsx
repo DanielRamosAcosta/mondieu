@@ -1,10 +1,21 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Movies from 'containers/Movies'
 
-const App = () =>
-  <div>
-    <span>Hello World!!</span>
-    <Movies />
-  </div>
+import { connectWebSocket } from 'modules/websocket'
 
-export default App
+const mapStateToProps = store => ({})
+
+@connect(mapStateToProps, { connectWebSocket })
+export default class App extends Component {
+  componentWillMount () {
+    this.props.connectWebSocket()
+  }
+
+  render = () =>
+    <div>
+      <span>Hello World!!</span>
+      <Movies />
+    </div>
+}
+
