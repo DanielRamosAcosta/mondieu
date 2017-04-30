@@ -20,13 +20,18 @@ class MoviesStore {
 
   async fetchMovies () {
     const kodi = await Kodi
-    const movies = await kodi.run('VideoLibrary.GetMovies', { properties: ['title', 'year', 'thumbnail'] })
-      .then(({movies}) => movies.map(({movieid: id, thumbnail, ...data}) => ({
+    const movies = await kodi.run('VideoLibrary.GetMovies', { sort: {order: 'ascending', method: 'title'}, properties: ['title', 'year', 'thumbnail', 'playcount'] })
+      .then(({movies}) => movies.map(({movieid: id, thumbnail, playcount, ...data}) => ({
           ...data,
           id,
+          viewed: playcount,
           thumbnail: thumbnail && decodeURIComponent(thumbnail).match(/image:\/\/(.+)\//)[1]
         }))
       )
+      .then(e => {
+        console.log(e)
+        return e
+      })
     this.all.replace(movies)
   }
 }

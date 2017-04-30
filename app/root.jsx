@@ -8,6 +8,7 @@ import { Provider } from 'mobx-react'
 import store from './stores'
 
 import './styles/global'
+import 'antd/dist/antd.css'
 
 const root = document.getElementById('root')
 

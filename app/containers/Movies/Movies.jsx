@@ -21,7 +21,12 @@ export default class Movies extends Component {
     return (
       <Layout xs={6} sm={4} md={4} lg={2}>
         {this.props.store && this.props.store.movies.all.map(movie =>
-          <Movie key={movie.id} movie={movie}></Movie>
+          <Movie
+            key={movie.id}
+            title={movie.title}
+            thumbnail={movie.thumbnail}
+            viewed={movie.viewed}
+          />
         )}
       </Layout>
     )

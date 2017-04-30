@@ -26,12 +26,14 @@ class Kodi {
 
   async importSchema () {
     this.schema = new jrpc.Schema(await this.loadSchema(), this.send)
-    this.socket.onmessage = ({ data }) => this.schema.handleResponse(data)
+    this.socket.onmessage = ({ data }) => {
+      console.log(data)
+      this.schema.handleResponse(data)
+    }
     return this
   }
 
   run (method, ...args) {
-    console.log(this.schema.schema)
     return this.schema.schema.methods[method](...args)
   }
 

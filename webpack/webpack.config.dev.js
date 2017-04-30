@@ -38,7 +38,7 @@ module.exports = {
           plugins: [
             'react-hot-loader/babel',
             'transform-decorators-legacy',
-            ['transform-runtime', {polyfill: false, regenerator: true}]
+            ['transform-runtime', {polyfill: false, regenerator: true}],
           ]
         }
       },
@@ -63,6 +63,23 @@ module.exports = {
             options: {
               sourceMap: true,
               includePaths: [resolve(__dirname, '../app/styles')]
+            }
+          }
+        ]
+      },
+
+      {
+        test: /\.(css|less)$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              sourceMap: true
+            }
+          }, {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true
             }
           }
         ]

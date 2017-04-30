@@ -2,8 +2,6 @@ import React from 'react'
 
 import styles from './styles'
 
-console.log(styles)
-
 function getClassNames (sizes) {
   let className = ''
   Object.keys(sizes).forEach(key => {
