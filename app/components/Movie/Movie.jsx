@@ -3,18 +3,41 @@ import Card from 'antd/lib/Card'
 import Button from 'antd/lib/Button'
 import Rate from 'antd/lib/Rate'
 import Checkbox from 'antd/lib/Checkbox'
+import classNames from 'classnames'
+
+import ImageLoader from 'components/ImageLoader'
 
 import styles from './styles'
 
-const Movie = ({ id, title, thumbnail, viewed, markViewed }) =>
-  <Card bodyStyle={{ padding: 0 }} title={title} className={styles.container}>
-    <div>
-      <img src={thumbnail} className={styles.thumbnail}/>
+const round = value => Math.round(value * 2) / 2
+
+const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress, ...other }) =>
+  <div className={styles.container}>
+    <div className={styles.media}>
+      <div className={styles.thumbnailContainer}>
+        <ImageLoader src={thumbnail} className={styles.thumbnail}/>
+      </div>
+      <div className={styles.overlayContainer}>
+        <Button shape='circle' icon='step-forward' ghost/>
+      </div>
     </div>
-    <div className={styles.actions}>
-      <Button shape='circle' icon='step-forward' />
-      <Checkbox checked={viewed} onChange={event => markViewed(id, event.target.checked)} />
+    <div className={styles.body}>
+      <div>
+        <h3 className={styles.title}>{title}</h3>
+      </div>
+      <div>
+        <span className={classNames(styles.genre, {[styles.hidden]: !genre.length})}>{genre.length ? genre.join(', ') : '.'}</span>
+      </div>
+      <div className={styles.data}>
+        <div>
+          <Rate disabled allowHalf value={rating} className={styles.rate}/>
+        </div>
+        <div>
+          <Checkbox checked={viewed} onChange={event => markViewed(id, event.target.checked)} className={styles.checkbox} />
+        </div>
+      </div>
     </div>
-  </Card>
+    <div className={styles.progress} style={{width: `${progress}%`}}/>
+  </div>
 
 export default Movie

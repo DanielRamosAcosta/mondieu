@@ -5,6 +5,7 @@ const express = require('express')
 const webpack = require('webpack')
 const webpackDevMiddleware = require('webpack-dev-middleware')
 const webpackHotMiddleware = require('webpack-hot-middleware')
+const proxy = require('express-http-proxy')
 const config = require('./webpack.config.dev')
 
 const app = express()
@@ -20,6 +21,10 @@ const middleware = webpackDevMiddleware(compiler, {
     colors: true
   }
 })
+
+app.use('/image/*', proxy('localhost:8085/image', {
+    proxyReqPathResolver: (req, res) => req.originalUrl
+}))
 
 app.use(middleware)
 

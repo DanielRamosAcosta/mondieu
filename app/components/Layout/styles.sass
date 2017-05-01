@@ -11,12 +11,7 @@ $max-width: 110em
 
 
 @function get-column-distribution($column-size)
-  $distribution: ""
-  $percentage: ($column-size / $columns) * 100
-  $divisions: $columns / $column-size
-  @for $i from 1 through $divisions
-    $distribution: $distribution + $percentage + "% "
-  @return #{$distribution}
+  @return repeat(#{12 / $column-size}, 1fr)
 
 
 @each $breakpoint in map-keys($breakpoints)

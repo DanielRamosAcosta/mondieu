@@ -11,7 +11,7 @@ const fetchMovies = action$ =>
   action$.ofType(FETCH_MOVIES)
     .mapTo(sendMessage('VideoLibrary.GetMovies', {
       sort: {order: 'ascending', method: 'title'},
-      properties: ['title', 'year', 'thumbnail', 'playcount']
+      properties: ['title', 'year', 'thumbnail', 'playcount', 'resume', 'rating', 'genre']
     }))
 
 const markViewed = action$ =>
@@ -26,13 +26,19 @@ const receiveMovies = action$ =>
   action$.ofType(RECEIVE_MESSAGE)
     .filter(action => action.payload.id === 'VideoLibrary.GetMovies')
     .map(action => action.payload.result.movies)
-    .map(movies => movies.map(({movieid: id, thumbnail, playcount, ...data}) => ({
+    .map(movies => movies.map(({movieid: id, thumbnail, rating, playcount, resume, ...data}) => ({
         ...data,
         id,
         viewed: playcount,
-        thumbnail: thumbnail && decodeURIComponent(thumbnail).match(/image:\/\/(.+)\//)[1]
+        thumbnail: `/image/${encodeURIComponent(thumbnail)}`,
+        rating: Math.round(rating) / 2,
+        progress: ((resume.position * 100) / resume.total) || 0
       }))
     )
+    .map(foo => {
+      console.log(foo)
+      return foo.slice(0, 40)
+    })
     .map(movies => ({
       type: `${FETCH_MOVIES}_SUCCESS`,
       payload: movies

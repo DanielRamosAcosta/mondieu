@@ -14,7 +14,6 @@ export default class App extends Component {
 
   render = () =>
     <div>
-      <span>Hello World!!</span>
       <Movies />
     </div>
 }

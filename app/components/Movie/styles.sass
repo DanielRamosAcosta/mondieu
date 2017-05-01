@@ -1,8 +1,40 @@
 $breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
 
+.media
+  padding: 0px
+  display: grid
+  grid-template-columns: [column] 1fr
+  grid-template-rows:  [picture] auto [data] auto
+
+.title
+  font-size: 14px
+  text-overflow: ellipsis
+  overflow: hidden
+  color: rgba(0, 0, 0, 0.85)
+  font-weight: 500
+  white-space: nowrap
+  margin-bottom: -3px
+
+.genre
+  display: block
+  white-space: nowrap
+  text-overflow: ellipsis
+  overflow: hidden
+
+.body
+  padding: 4px 10px
+
 .container
   display: flex
   flex-direction: column
+  justify-content: space-between
+  background: #fff
+  border-radius: 4px
+  font-size: 12px
+  position: relative
+  overflow: hidden
+  transition: all .3s
+  border: 1px solid #e9e9e9
 
   &:hover
     z-index: 100
@@ -10,19 +42,51 @@ $breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
     @media (min-width: map-get($breakpoints, 'xs'))
       transform: scale(1.02, 1.02)
 
-  > div:last-child
-    flex: 1
-    display: flex
-    flex-direction: column
-    justify-content: space-between
+.thumbnailContainer
+  grid-column: column
+  grid-row: picture
 
 .thumbnail
+  display: block
   width: 100%
 
-.actions
+.overlayContainer
+  z-index: 1000
+  grid-column: column
+  grid-row: picture
+
+  transition: all 200ms
+  opacity: 0
   display: flex
-  flex-direction: row
-  justify-content: space-around
+  align-items: flex-end
+  padding: 1em
+  background-color: rgba(0, 0, 0, 0.60)
+  justify-content: space-between
+  &:hover
+    opacity: 1
+
+.overlayActions
+  display: flex
+  flex: 1
   align-items: center
-  margin-top: 5px
-  margin-bottom: 8px
+  justify-content: space-between
+
+.data
+  display: flex
+  justify-content: space-between
+
+.checkbox
+  span
+    background-color: transparent
+
+.rate
+  font-size: 14px !important
+  li
+    margin-right: 3px
+    cursor: inherit !important
+.hidden
+  opacity: 0
+
+.progress
+  height: 2px
+  background-color: #108ee9

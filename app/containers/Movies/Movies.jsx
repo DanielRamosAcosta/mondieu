@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import Layout from 'components/Layout'
 import Movie from 'components/Movie'
 
 import { fetchMovies, markViewed } from 'modules/movies'
+
+import styles from './styles'
 
 const mapStateToProps = store => ({
   movies: store.getIn(['movies', 'all']).toJS()
@@ -23,18 +24,23 @@ export default class Movies extends Component {
 
   render () {
     return (
-      <Layout xs={6} sm={4} md={4} lg={2}>
-        {this.props.movies.map(movie =>
-          <Movie
-            key={movie.id}
-            id={movie.id}
-            title={movie.title}
-            thumbnail={movie.thumbnail}
-            viewed={movie.viewed}
-            markViewed={this.props.markViewed}
-          />
-        )}
-      </Layout>
+      <div className={styles.container}>
+        <section className={styles.grid}>
+          {this.props.movies.map(movie =>
+            <Movie
+              key={movie.id}
+              id={movie.id}
+              title={movie.title}
+              thumbnail={movie.thumbnail}
+              viewed={movie.viewed}
+              rating={movie.rating}
+              genre={movie.genre}
+              progress={movie.progress}
+              markViewed={this.props.markViewed}
+            />
+          )}
+        </section>
+      </div>
     )
   }
 }
