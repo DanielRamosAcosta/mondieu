@@ -19,7 +19,7 @@ export default class Movies extends Component {
   }
 
   componentWillMount () {
-    this.props.fetchMovies()
+    !this.props.movies.length && this.props.fetchMovies()
   }
 
   render () {

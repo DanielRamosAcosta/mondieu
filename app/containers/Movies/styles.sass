@@ -1,11 +1,18 @@
+$breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
+
 .container
-  display: flex;
-  justify-content: center;
+  display: flex
+  flex: 1
+  justify-content: center
 
 .grid
   flex: 1
   display: grid
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))
   grid-gap: 2em
   max-width: 1500px
   margin: 2em
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))
+  @media (max-width: map-get($breakpoints, 'sm'))
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr))
+    margin: 1em
+    grid-gap: 1em

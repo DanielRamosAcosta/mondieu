@@ -1,0 +1,18 @@
+$breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
+
+.header
+  padding: 0 27px
+  position: fixed
+  width: 100%
+  z-index: 500;
+  @media (min-width: map-get($breakpoints, 'sm'))
+    position: inherit
+
+
+.sidebar
+  position: fixed;
+  height: 100%;
+  z-index: 1000;
+
+.footer
+  background-color: blue

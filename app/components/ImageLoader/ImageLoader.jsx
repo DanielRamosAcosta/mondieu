@@ -1,5 +1,5 @@
 import React, { PropTypes, Component } from 'react'
-import Spin from 'antd/lib/Spin'
+import Icon from 'antd/lib/Icon'
 import classNames from 'classnames'
 
 import styles from './styles.sass'
@@ -24,15 +24,15 @@ class ImageLoader extends Component {
     this.handleImageLoaded = ::this.handleImageLoaded
   }
 
-  handleImageLoaded = () => {
+  // Debug : Math.floor(Math.random() * 10) > 5 &&
+  handleImageLoaded = () =>
     this.setState({
       loaded: true
     })
-  }
 
   renderProgress = () =>
     <div className={classNames(this.props.className, styles.loader)}>
-      <Spin/>
+      <Icon type='loading' />
     </div>
 
   render = () =>

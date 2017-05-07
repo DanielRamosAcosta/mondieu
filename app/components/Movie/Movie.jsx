@@ -9,35 +9,35 @@ import ImageLoader from 'components/ImageLoader'
 
 import styles from './styles'
 
-const round = value => Math.round(value * 2) / 2
-
 const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress, ...other }) =>
   <div className={styles.container}>
     <div className={styles.media}>
-      <div className={styles.thumbnailContainer}>
+      <div>
         <ImageLoader src={thumbnail} className={styles.thumbnail}/>
       </div>
       <div className={styles.overlayContainer}>
         <Button shape='circle' icon='step-forward' ghost/>
       </div>
     </div>
-    <div className={styles.body}>
-      <div>
-        <h3 className={styles.title}>{title}</h3>
-      </div>
-      <div>
-        <span className={classNames(styles.genre, {[styles.hidden]: !genre.length})}>{genre.length ? genre.join(', ') : '.'}</span>
-      </div>
-      <div className={styles.data}>
+    <div>
+      <div className={styles.body}>
         <div>
-          <Rate disabled allowHalf value={rating} className={styles.rate}/>
+          <h3 className={styles.title}>{title}</h3>
         </div>
         <div>
-          <Checkbox checked={viewed} onChange={event => markViewed(id, event.target.checked)} className={styles.checkbox} />
+          <span className={classNames(styles.genre, {[styles.hidden]: !genre.length})}>{genre.length ? genre.join(', ') : '.'}</span>
+        </div>
+        <div className={styles.data}>
+          <div>
+            <Rate disabled allowHalf value={rating} className={styles.rate}/>
+          </div>
+          <div>
+            <Checkbox checked={viewed} onChange={event => markViewed(id, event.target.checked)} />
+          </div>
         </div>
       </div>
+      <div className={styles.progress} style={{width: `${progress}%`}}/>
     </div>
-    <div className={styles.progress} style={{width: `${progress}%`}}/>
   </div>
 
 export default Movie
