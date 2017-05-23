@@ -31,7 +31,7 @@ export const fetchMovies = () =>
     type: FETCH_MOVIES
   })
 
-export const markViewed = (id, status) =>
+export const markViewed = (status, id) =>
   ({
     type: MARK_VIEWED,
     payload: {id, status}

@@ -1,9 +1,9 @@
 import React from 'react'
-import Card from 'antd/lib/Card'
 import Button from 'antd/lib/Button'
-import Rate from 'antd/lib/Rate'
-import Checkbox from 'antd/lib/Checkbox'
+import Rate from 'components/Rate'
+import Viewed from 'components/Viewed'
 import classNames from 'classnames'
+import Play from 'react-icons/fa/play'
 
 import ImageLoader from 'components/ImageLoader'
 
@@ -16,7 +16,9 @@ const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progre
         <ImageLoader src={thumbnail} className={styles.thumbnail}/>
       </div>
       <div className={styles.overlayContainer}>
-        <Button shape='circle' icon='step-forward' ghost/>
+        <button className={styles.playButton}>
+          <Play />
+        </button>
       </div>
     </div>
     <div>
@@ -32,7 +34,7 @@ const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progre
             <Rate disabled allowHalf value={rating} className={styles.rate}/>
           </div>
           <div>
-            <Checkbox checked={viewed} onChange={event => markViewed(id, event.target.checked)} />
+            <Viewed viewed={viewed} onToggle={markViewed} id={id} />
           </div>
         </div>
       </div>

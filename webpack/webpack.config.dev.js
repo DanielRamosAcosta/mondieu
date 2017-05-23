@@ -44,6 +44,20 @@ module.exports = {
       },
 
       {
+        test: /\.js[x]?$/,
+        include: /react-icons/,
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          presets: [
+            ['es2015', {modules: false}],
+            'stage-0',
+            'react'
+          ]
+        }
+      },
+
+      {
         test: /\.s[ac]ss$/,
         use: [
           {

@@ -1,5 +1,8 @@
 $breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
 
+.container
+  display: flex
+
 .header
   padding: 0 27px
   position: fixed
@@ -8,11 +11,60 @@ $breakpoints: (xs: 576px, sm: 576px, md: 768px, lg: 992px, xl: 1200px)
   @media (min-width: map-get($breakpoints, 'sm'))
     position: inherit
 
-
 .sidebar
   position: fixed;
   height: 100%;
   z-index: 1000;
 
 .footer
-  background-color: blue
+  background-color: #e9e9e9
+
+.transition
+  display: grid
+  grid-template-columns: 100%
+  grid-template-rows: 1
+
+  > div
+    grid-column: 1
+    grid-row: 1
+
+.routesContainer
+  width: 100%
+  display: flex
+  flex-direction: column
+
+  > div:first-child
+    height: 100%
+
+@keyframes mitadoso
+  0%
+    opacity: 0.01
+  50%
+    opacity: 0.01
+  100%
+    opacity: 1
+
+.enter
+  opacity: 0.01
+
+.enterActive
+  opacity: 1
+  animation: mitadoso 400ms ease-in
+
+.leave
+  opacity: 1
+
+.leaveActive
+  opacity: 0.01
+  transition: opacity 200ms ease-in
+
+.love
+  width: 16px
+  height: 16px
+  display: inline-block
+  margin-left: 5px
+  margin-right: 5px
+
+.footerMessage
+  display: flex
+  align-items: center

@@ -29,14 +29,14 @@ const receiveMovies = action$ =>
     .map(movies => movies.map(({movieid: id, thumbnail, rating, playcount, resume, ...data}) => ({
         ...data,
         id,
-        viewed: playcount,
+        viewed: !!playcount,
         thumbnail: `/image/${encodeURIComponent(thumbnail)}`,
-        rating: Math.round(rating) / 2,
+        rating: rating / 2,
         progress: ((resume.position * 100) / resume.total) || 0
       }))
     )
     .map(foo => {
-      console.log(foo)
+      // console.log(foo)
       return foo.slice(0, 40)
     })
     .map(movies => ({
