@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Layout, { Header, Content, Footer, Sider } from 'antd/lib/Layout'
-import Menu from 'antd/lib/Menu'
-import Icon from 'antd/lib/Icon'
-import Button from 'antd/lib/Button'
+import Menu from 'antd/lib/menu'
+import Icon from 'antd/lib/icon'
+import Button from 'antd/lib/button'
 
 import MovieIcon from 'react-icons/lib/md/movie'
 import TVShowIcon from 'react-icons/lib/md/live-tv'
@@ -67,7 +67,7 @@ export default class App extends Component {
       mode: collapsed ? 'inline' : 'vertical'
     })
 
-  onChangePath = ({ key: path }) => {
+  onChangePath = path => {
     this.props.pathname !== path && this.props.push(path)
   }
 

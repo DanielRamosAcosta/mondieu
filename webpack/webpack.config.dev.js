@@ -44,6 +44,34 @@ module.exports = {
       },
 
       {
+        test: /\.ts[x]?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                ['es2015', {modules: false}],
+                'stage-0',
+                'react'
+              ],
+              plugins: [
+                'react-hot-loader/babel',
+                'transform-decorators-legacy',
+                ['transform-runtime', {polyfill: false, regenerator: true}],
+              ]
+            }
+          }, {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true
+            }
+          }
+        ]
+      },
+
+      {
         test: /\.js[x]?$/,
         include: /react-icons/,
         loader: 'babel-loader',
@@ -102,7 +130,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.sass'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.sass'],
     alias: {
       components: resolve(__dirname, '../app/components'),
       containers: resolve(__dirname, '../app/containers'),

@@ -1,15 +1,16 @@
-import React from 'react'
-import Button from 'antd/lib/Button'
-import Rate from 'components/Rate'
-import Viewed from 'components/Viewed'
+import * as React from 'react'
+import Button from 'antd/lib/button'
 import classNames from 'classnames'
 import Play from 'react-icons/fa/play'
 
+import Rate from 'components/Rate'
+import Viewed from 'components/Viewed'
 import ImageLoader from 'components/ImageLoader'
 
-import styles from './styles'
+import { TSpropTypes, propTypes } from './types'
+import styles from './styles.sass'
 
-const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress, ...other }) =>
+const Movie: React.StatelessComponent<TSpropTypes> = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress }) =>
   <div className={styles.container}>
     <div className={styles.media}>
       <div>
@@ -31,7 +32,7 @@ const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progre
         </div>
         <div className={styles.data}>
           <div>
-            <Rate disabled allowHalf value={rating} className={styles.rate}/>
+            <Rate value={rating} />
           </div>
           <div>
             <Viewed viewed={viewed} onToggle={markViewed} id={id} />
@@ -41,5 +42,7 @@ const Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progre
       <div className={styles.progress} style={{width: `${progress}%`}}/>
     </div>
   </div>
+
+Movie.propTypes = propTypes
 
 export default Movie
