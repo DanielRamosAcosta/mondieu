@@ -5,12 +5,14 @@
         "noImplicitAny": true,
         "module": "es6",
         "target": "es6",
+        "experimentalDecorators": true,
         "jsx": "react",
         "allowSyntheticDefaultImports": true,
         "baseUrl": "./",
         "moduleResolution": "node",
         "paths": {
-          "components/*": ["app/components/*/index"]
+          "components/*": ["app/components/*/index"],
+          "modules/*": ["app/modules/*"]
         }
     }
 }

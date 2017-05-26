@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 
 import Movie from 'components/Movie'
 
-import { fetchMovies, markViewed } from 'modules/movies'
+import { fetchMovies, markViewed } from '../../modules/movies'
 
+import { TSpropTypes, propTypes, defaultProps } from './types'
 import styles from './styles'
 
 const mapStateToProps = store => ({
@@ -13,10 +14,9 @@ const mapStateToProps = store => ({
 })
 
 @connect(mapStateToProps, { fetchMovies, markViewed })
-export default class Movies extends Component {
-  static defaultProps = {
-    movies: []
-  }
+export default class Movies extends Component<TSpropTypes, null> {
+  static propTypes = propTypes
+  static defaultProps = defaultProps
 
   componentWillMount () {
     !this.props.movies.length && this.props.fetchMovies()
@@ -26,19 +26,19 @@ export default class Movies extends Component {
     return (
       <div className={styles.container}>
         <section className={styles.grid}>
-          {this.props.movies.map(movie =>
+          {this.props.movies.map(({id, title, thumbnail, viewed, rating, genre, progress}) =>
             <Movie
-              key={movie.id}
-              id={movie.id}
-              title={movie.title}
-              thumbnail={movie.thumbnail}
-              viewed={movie.viewed}
-              rating={movie.rating}
-              genre={movie.genre}
-              progress={movie.progress}
+              key={id}
+              id={id}
+              title={title}
+              thumbnail={thumbnail}
+              viewed={viewed}
+              rating={rating}
+              genre={genre}
+              progress={progress}
               markViewed={this.props.markViewed}
-            />
-          )}
+            />)
+          }
         </section>
       </div>
     )

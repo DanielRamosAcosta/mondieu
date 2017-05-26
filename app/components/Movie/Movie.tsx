@@ -45,4 +45,7 @@ const Movie: React.StatelessComponent<TSpropTypes> = ({ id, title, thumbnail, vi
 
 Movie.propTypes = propTypes
 
+export const foo = 3
+
+
 export default Movie
