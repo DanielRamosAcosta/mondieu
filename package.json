@@ -30,6 +30,8 @@
   "dependencies": {
     "antd": "^2.10.4",
     "classname": "^0.0.0",
+    "coffee-loader": "iHaiduk/coffee-loader",
+    "coffeescript": "xixixao/coffee-script#csx",
     "immutable": "^3.8.1",
     "jrpc-schema": "^2.1.0",
     "react": "15.6.0-rc.1",

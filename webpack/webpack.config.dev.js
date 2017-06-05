@@ -58,6 +58,28 @@ module.exports = {
       },
 
       {
+        test: /\.cs[x]?$/,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              babelrc: false,
+              presets: [
+                ['es2015', {modules: false}],
+                'stage-0',
+                'react'
+              ]
+            }
+          }, {
+            loader: 'coffee-loader',
+            options: {
+              sourceMap: true
+            }
+          }
+        ]
+      },
+
+      {
         test: /\.s[ac]ss$/,
         use: [
           {

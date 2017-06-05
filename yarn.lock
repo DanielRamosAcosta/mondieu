@@ -1260,6 +1260,18 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
+coffee-loader@iHaiduk/coffee-loader:
+  version "0.7.3"
+  resolved "https://codeload.github.com/iHaiduk/coffee-loader/tar.gz/9e759db1e79fd83eff145604422561f3437fbe19"
+  dependencies:
+    coffeescript "^2.0.0-beta2"
+    loader-utils "^1.1.0"
+
+coffeescript@^2.0.0-beta2, coffeescript@xixixao/coffee-script#csx:
+  version "2.0.0-beta2"
+  uid b1742c1c63f9838e45d2676dac68b2828e37b7bb
+  resolved "https://codeload.github.com/xixixao/coffee-script/tar.gz/b1742c1c63f9838e45d2676dac68b2828e37b7bb"
+
 color-convert@^1.3.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/color-convert/-/color-convert-1.9.0.tgz#1accf97dd739b983bf994d56fec8f95853641b7a"
@@ -3552,13 +3564,13 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@15.5.8, prop-types@^15.5.7:
+prop-types@15.5.8, prop-types@^15.5.7, prop-types@~15.5.7:
   version "15.5.8"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.8.tgz#6b7b2e141083be38c8595aa51fc55775c7199394"
   dependencies:
     fbjs "^0.8.9"
 
-prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.5.9, prop-types@~15.5.7:
+prop-types@15.x, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.8, prop-types@^15.5.9:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
