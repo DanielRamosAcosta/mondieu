@@ -27,7 +27,9 @@ Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress }) 
           <h3 className={styles.title}>{title}</h3>
         </div>
         <div>
-          <span className={classNames(styles.genre, {"#{styles.hidden}": !genre.length})}>{if genre.length then genre.join(', ') else '.'}</span>
+          <span className={classNames(styles.genre, {"#{styles.hidden}": !genre.length})}>
+            {if genre.length then genre.join(', ') else '.'}
+          </span>
         </div>
         <div className={styles.data}>
           <div>
