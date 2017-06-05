@@ -58,7 +58,7 @@ module.exports = {
       },
 
       {
-        test: /\.cs[x]?$/,
+        test: /\.(cjsx|coffe)?$/,
         use: [
           {
             loader: 'babel-loader',
@@ -124,7 +124,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js', '.jsx', '.sass'],
+    extensions: ['.js', '.jsx', '.cjsx', '.coffee', '.sass'],
     alias: {
       components: resolve(__dirname, '../app/components'),
       containers: resolve(__dirname, '../app/containers'),
