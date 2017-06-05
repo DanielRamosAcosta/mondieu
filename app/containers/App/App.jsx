@@ -16,6 +16,7 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
+import TimeBar from 'containers/TimeBar'
 import Movies from 'containers/Movies'
 
 import Sidebar from 'components/Sidebar'
@@ -116,6 +117,7 @@ export default class App extends Component {
             <span>by <a href='https://github.com/DanielRamosAcosta'>@DanielRamosAcosta</a></span>
           </div>
         </Footer>
+        <TimeBar />
       </div>
     </div>
 }

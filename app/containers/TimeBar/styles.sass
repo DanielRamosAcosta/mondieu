@@ -1,0 +1,26 @@
+@import 'mixins'
+@import 'breakpoints'
+
+$height: 46px
+
+.container
+  background-color: #f2f2f2
+  border-top: 1px solid rgba(0,0,0,.15)
+  position: fixed
+  width: 85%
+  bottom: 0
+  z-index: 1
+  padding: 3px
+  height: $height
+  transform: translateY(calc(#{$height} * (1 - var(--open))))
+  transition: transform 200ms ease
+  display: flex
+  align-items: center
+
+  +in-screens-of($md)
+    padding-left: 10em
+    padding-right: 10em
+
+.placeholder
+  height: calc(#{$height} * var(--open))
+  transition: height 200ms ease

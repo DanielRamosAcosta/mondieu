@@ -1,0 +1,22 @@
+$size: 18px
+
+.container
+  > svg
+    transition: color 300ms ease
+    &:hover
+      color: black
+    &:not(:last-child)
+      margin-right: 10px
+
+.back
+  width: $size
+  height: $size
+  cursor: pointer
+.play
+  width: $size * 1.2
+  height: $size * 1.2
+  cursor: pointer
+.forward
+  width: $size
+  height: $size
+  cursor: pointer

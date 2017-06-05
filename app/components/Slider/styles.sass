@@ -1,0 +1,53 @@
+$not-hover-primary: #75bff5
+$not-hover-secondary: #e9e9e9
+$hover-primary: #108ee9
+$hover-secondary: #e1e1e1
+
+.slider
+  height: 37px
+  display: flex
+  align-items: center
+  background-color: #f2f2f2
+  flex: 1
+  input[type=range]
+    -webkit-appearance: none
+    margin: 10px 0
+    width: 100%
+    &:focus
+      outline: none
+    &::-webkit-slider-runnable-track
+      width: 100%
+      height: 4px
+      cursor: pointer
+      animate: 0.2s
+      background-color: $not-hover-primary
+      border-radius: 25px
+      border: 0px solid #000101
+      transition: 200ms all ease
+      background: -webkit-linear-gradient(left, $not-hover-primary var(--current-percentage), $not-hover-secondary var(--current-percentage))
+    &::-webkit-slider-thumb
+      border: 2px solid $not-hover-primary
+      height: 15px
+      width: 15px
+      border-radius: 50%
+      background-color: white
+      cursor: pointer
+      -webkit-appearance: none
+      margin-top: -5px
+      transition: 200ms all ease
+      transform: scale(0, 0)
+    &:hover::-webkit-slider-thumb:hover
+      transform: scale(1.1, 1.1)
+  &:hover input[type=range]
+    &::-webkit-slider-runnable-track
+      background: -webkit-linear-gradient(left, $hover-primary var(--current-percentage), $hover-secondary var(--current-percentage))
+    &::-webkit-slider-thumb
+      border-color: $hover-primary
+      transform: scale(1, 1)
+  &:active input[type=range]
+    &::-webkit-slider-runnable-track
+      background: -webkit-linear-gradient(left, $hover-primary var(--current-percentage), $hover-secondary var(--current-percentage))
+    &::-webkit-slider-thumb
+      border-color: $hover-primary
+      box-shadow: 0px 0px 0px 3px transparentize($not-hover-primary, 0.5)
+      transform: scale(1, 1)
