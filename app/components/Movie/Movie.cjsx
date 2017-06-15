@@ -9,7 +9,7 @@ import ImageLoader from 'components/ImageLoader'
 
 import styles from './styles'
 
-Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress }) ->
+Movie = ({ id, title, thumbnail, viewed, markViewed, rating, genre, progress, other }) ->
   <div className={styles.container}>
     <div className={styles.media}>
       <div>

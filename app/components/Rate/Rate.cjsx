@@ -8,29 +8,38 @@ import times from 'lodash/times'
 
 import styles from './styles'
 
-renderWhole = (number) ->
-  times number
-  .map (key) ->
-    <Full className={styles.star} key={key} />
+FullStar = (key) ->
+  <Full className={styles.star} key={key} />
 
-renderHalf = (number) ->
-  if number < 0.25
-    <Empty className={styles.star} />
-  if 0.25 <= number < 0.75
-    <Half className={styles.star} />
+EmptyStar = (key) ->
+  <Empty className={styles.star} key={key} />
+
+HalfStar = (key) ->
+  <Half className={styles.star} key={key} />
+
+renderWhole = (value) ->
+  times Math.floor value
+  .map FullStar
+
+renderEmpty = (value, max) ->
+  number = max - 1 - Math.floor(value)
+  times number
+  .map EmptyStar
+
+renderHalf = (value) ->
+  reminder = value - Math.floor(value)
+  if reminder < 0.25
+    EmptyStar()
+  if 0.25 <= reminder < 0.75
+    HalfStar()
   else
-    <Full className={styles.star} />
-
-renderEmpty = (number) ->
-  times number
-  .map (key) ->
-    <Empty className={styles.star} key={key} />
+    FullStar()
 
 Rate = ({ value, max }) ->
   <div>
-    {renderWhole(Math.floor(value))}
-    {renderHalf(value - Math.floor(value))}
-    {renderEmpty(max - 1 - Math.floor(value))}
+    {renderWhole value}
+    {renderHalf value}
+    {renderEmpty value, max}
   </div>
 
 Rate.propTypes =
