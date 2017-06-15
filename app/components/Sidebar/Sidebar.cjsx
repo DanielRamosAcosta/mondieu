@@ -15,14 +15,14 @@ import SidebarPlaceHolder from './SidebarPlaceHolder'
 
 import styles from './styles'
 
-const paths = [
-  {path: '/movies', label: 'Movies', Icon: MovieIcon},
-  {path: '/tv-shows', label: 'TV Shows', Icon: TVShowIcon},
-  {path: '/music', label: 'Music', Icon: MusicIcon},
+paths = [
+  {path: '/movies', label: 'Movies', Icon: MovieIcon}
+  {path: '/tv-shows', label: 'TV Shows', Icon: TVShowIcon}
+  {path: '/music', label: 'Music', Icon: MusicIcon}
   {path: '/settings', label: 'Settings', Icon: SettingsIcon}
 ]
 
-const renderItem = ({path, label, Icon}) =>
+renderItem = ({path, label, Icon}) ->
   <Item key={path}>
     <span>
       <Icon />
@@ -30,7 +30,7 @@ const renderItem = ({path, label, Icon}) =>
     </span>
   </Item>
 
-const Sidebar = (props, context) =>
+Sidebar = (props, context) ->
   <div className={styles.sider}>
     <Sider
       collapsible
@@ -40,14 +40,14 @@ const Sidebar = (props, context) =>
       trigger={null}
       breakpoint='lg'
     >
-      <div className="logo" />
-      <div className={classNames(styles.content, {[styles.contentCollapsed]: props.collapsed})}>
-        <Menu theme='dark' mode={props.mode} selectedKeys={[props.path]} onClick={props.onChangePath}>
-          {paths.map(renderItem)}
+      <div className='logo' />
+      <div className={classNames styles.content, "#{styles.contentCollapsed}": props.collapsed}>
+        <Menu theme='dark' mode={props.mode} selectedKeys={props.path} onClick={props.onChangePath}>
+          {paths.map renderItem}
         </Menu>
         <div className={styles.triggerContainer}>
-          <button onClick={() => props.onCollapse(!props.collapsed)}>
-            <Left className={classNames(styles.trigger, {[styles.triggerCollapsed]: props.collapsed})} />
+          <button onClick={-> props.onCollapse !props.collapsed}>
+            <Left className={classNames styles.trigger, "#{styles.triggerCollapsed}": props.collapsed} />
           </button>
         </div>
       </div>
