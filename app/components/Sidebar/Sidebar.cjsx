@@ -30,29 +30,28 @@ renderItem = ({path, label, Icon}) ->
     </span>
   </Item>
 
-Sidebar = (props, context) ->
+Sidebar = ({ mode, path, onChangePath, onCollapse, collapsed }) ->
   <div className={styles.sider}>
     <Sider
       collapsible
-      collapsed={props.collapsed}
-      onCollapse={props.onCollapse}
-      style={props.style}
+      collapsed={collapsed}
+      onCollapse={onCollapse}
       trigger={null}
       breakpoint='lg'
     >
       <div className='logo' />
-      <div className={classNames styles.content, "#{styles.contentCollapsed}": props.collapsed}>
-        <Menu theme='dark' mode={props.mode} selectedKeys={props.path} onClick={props.onChangePath}>
+      <div className={classNames styles.content, "#{styles.contentCollapsed}": collapsed}>
+        <Menu theme='dark' mode={mode} selectedKeys={path} onClick={onChangePath}>
           {paths.map renderItem}
         </Menu>
         <div className={styles.triggerContainer}>
-          <button onClick={-> props.onCollapse !props.collapsed}>
-            <Left className={classNames styles.trigger, "#{styles.triggerCollapsed}": props.collapsed} />
+          <button onClick={-> onCollapse !collapsed}>
+            <Left className={classNames styles.trigger, "#{styles.triggerCollapsed}": collapsed} />
           </button>
         </div>
       </div>
     </Sider>
-    <SidebarPlaceHolder collapsed={props.collapsed} />
+    <SidebarPlaceHolder collapsed={collapsed} />
   </div>
 
 export default Sidebar
