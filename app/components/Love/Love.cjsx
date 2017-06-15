@@ -5,7 +5,7 @@ import classNames from 'classnames'
 
 import styles from './styles'
 
-Love = ({ className }) =>
+Love = ({ className }) ->
   <div className={classNames styles.heart, className}>
     <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'>
       <path

@@ -7,7 +7,7 @@ import Forward from 'react-icons/fa/step-forward'
 
 import styles from './styles'
 
-const PlayControls = ({ ...other }) =>
+PlayControls = ->
   <div className={styles.container}>
     <Back className={styles.back} />
     <Play className={styles.play} />
