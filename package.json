@@ -4,7 +4,7 @@
   "description": "SPA web interface for Kodi",
   "main": "src/scripts/client.js",
   "scripts": {
-    "start": "node ./webpack/dev-server.js",
+    "start": "coffee ./webpack/dev-server.litcoffee",
     "build": "webpack -p --env=prod --progress --profile --colors"
   },
   "repository": {

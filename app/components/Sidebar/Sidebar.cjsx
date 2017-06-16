@@ -41,7 +41,7 @@ Sidebar = ({ mode, path, onChangePath, onCollapse, collapsed }) ->
     >
       <div className='logo' />
       <div className={classNames styles.content, "#{styles.contentCollapsed}": collapsed}>
-        <Menu theme='dark' mode={mode} selectedKeys={path} onClick={onChangePath}>
+        <Menu theme='dark' mode={mode} selectedKeys={[path]} onClick={onChangePath}>
           {paths.map renderItem}
         </Menu>
         <div className={styles.triggerContainer}>
