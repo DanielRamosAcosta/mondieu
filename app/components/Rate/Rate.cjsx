@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Full from 'react-icons/fa/star'
-import Empty from 'react-icons/fa/star-o'
-import Half from 'react-icons/fa/star-half-empty'
-import times from 'lodash/times'
+import Full from 'react-icons/lib/fa/star'
+import Empty from 'react-icons/lib/fa/star-o'
+import Half from 'react-icons/lib/fa/star-half-empty'
 
-import styles from './styles'
+import styles from './styles.sass'
 
 FullStar = (key) ->
   <Full className={styles.star} key={key} />
@@ -17,27 +16,26 @@ EmptyStar = (key) ->
 HalfStar = (key) ->
   <Half className={styles.star} key={key} />
 
-renderWhole = (value) ->
-  times Math.floor value
-  .map FullStar
+renderFull = (value) ->
+  [0...Math.floor(value)].map FullStar
 
 renderEmpty = (value, max) ->
-  number = max - 1 - Math.floor(value)
-  times number
-  .map EmptyStar
+  [Math.ceil(value)...max].map EmptyStar
 
 renderHalf = (value) ->
   reminder = value - Math.floor(value)
+  if reminder is 0
+    return null
   if reminder < 0.25
-    EmptyStar()
+    return EmptyStar()
   if 0.25 <= reminder < 0.75
-    HalfStar()
-  else
-    FullStar()
+    return HalfStar()
+  if reminder > 0.75
+    return FullStar()
 
 Rate = ({ value, max }) ->
   <div>
-    {renderWhole value}
+    {renderFull value}
     {renderHalf value}
     {renderEmpty value, max}
   </div>

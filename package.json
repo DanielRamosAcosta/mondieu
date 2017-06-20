@@ -5,6 +5,8 @@
   "main": "src/scripts/client.js",
   "scripts": {
     "start": "coffee ./webpack/dev-server.litcoffee",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "webpack -p --env=prod --progress --profile --colors"
   },
   "repository": {
@@ -29,6 +31,7 @@
   },
   "dependencies": {
     "antd": "^2.11.0",
+    "babel-plugin-module-resolver": "^2.7.1",
     "classname": "^0.0.0",
     "immutable": "^3.8.1",
     "jrpc-schema": "^2.1.0",
@@ -39,6 +42,7 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "react-router-redux": "v5.0.0-alpha.4",
+    "react-test-renderer": "^15.6.1",
     "react-transition-group": "^1.2.0",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
@@ -49,6 +53,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
+    "babel-jest": "^20.0.3",
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -59,12 +64,14 @@
     "coffeescript": "jashkenas/coffeescript#2",
     "css-loader": "^0.28.4",
     "dotenv": "^4.0.0",
+    "enzyme": "^2.8.2",
     "express": "^4.15.3",
     "express-http-proxy": "^1.0.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
     "fs-promise": "^2.0.3",
     "html-webpack-plugin": "^2.28.0",
+    "jest": "^20.0.4",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "lodash": "^4.17.4",
@@ -79,6 +86,25 @@
     "webpack-dev-middleware": "^1.10.2",
     "webpack-hot-middleware": "^2.18.0",
     "ws": "^3.0.0"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "jsx",
+      "cjsx",
+      "coffee"
+    ],
+    "transform": {
+      "^.+\\.(coffee|cjsx)$": "<rootDir>/test/preprocessor.js",
+      "\\.(js|jsx)$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|sass)$": "<rootDir>/test/mocks/styles.js"
+    },
+    "modulePaths": [
+      "<rootDir>/app/components"
+    ]
   },
   "addon": {
     "name": "webinterface.mondieu"
