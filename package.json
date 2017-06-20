@@ -104,6 +104,9 @@
     },
     "modulePaths": [
       "<rootDir>/app/components"
+    ],
+    "testMatch": [
+      "**/*.test.coffee"
     ]
   },
   "addon": {
