@@ -16,28 +16,22 @@ EmptyStar = (key) ->
 HalfStar = (key) ->
   <Half className={styles.star} key={key} />
 
-renderFull = (value) ->
-  [0...Math.floor(value)].map FullStar
-
-renderEmpty = (value, max) ->
-  [Math.ceil(value)...max].map EmptyStar
-
 renderHalf = (value) ->
-  reminder = value - Math.floor(value)
-  if reminder is 0
+  decimalPart = value - Math.floor(value)
+  if decimalPart is 0
     return null
-  if reminder < 0.25
+  if decimalPart < 0.25
     return EmptyStar()
-  if 0.25 <= reminder < 0.75
+  if 0.25 <= decimalPart < 0.75
     return HalfStar()
-  if reminder > 0.75
+  if decimalPart > 0.75
     return FullStar()
 
 Rate = ({ value, max }) ->
   <div>
-    {renderFull value}
+    {[0...Math.floor(value)].map FullStar}
     {renderHalf value}
-    {renderEmpty value, max}
+    {[Math.ceil(value)...max].map EmptyStar}
   </div>
 
 Rate.propTypes =
