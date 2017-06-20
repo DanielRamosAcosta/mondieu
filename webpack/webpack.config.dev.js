@@ -1,26 +1,22 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+
+const common = require('./webpack.config.common.js')
 
 module.exports = {
   entry: [
     'react-hot-loader/patch',
     'webpack-hot-middleware/client?reload=true',
     'webpack/hot/only-dev-server',
-    './root.jsx'
+    common.entry
   ],
   output: {
     filename: 'bundle.js',
     path: resolve(__dirname, '../public')
   },
 
-  context: resolve(__dirname, '../app'),
+  context: common.context,
   devtool: 'inline-source-map',
-  devServer: {
-    hot: true,
-    contentBase: resolve(__dirname, '../public'),
-    historyApiFallback: true
-  },
 
   module: {
     rules: [
@@ -30,16 +26,8 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           babelrc: false,
-          presets: [
-            ['es2015', {modules: false}],
-            'stage-0',
-            'react'
-          ],
-          plugins: [
-            'react-hot-loader/babel',
-            'transform-decorators-legacy',
-            ['transform-runtime', {polyfill: false, regenerator: true}],
-          ]
+          presets: common.babel.presets,
+          plugins: common.babel.plugins.concat('react-hot-loader/babel')
         }
       },
 
@@ -49,11 +37,7 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           babelrc: false,
-          presets: [
-            ['es2015', {modules: false}],
-            'stage-0',
-            'react'
-          ]
+          presets: common.babel.presets
         }
       },
 
@@ -64,11 +48,8 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               babelrc: false,
-              presets: [
-                ['es2015', {modules: false}],
-                'stage-0',
-                'react'
-              ]
+              presets: common.babel.presets,
+              plugins: common.babel.plugins.concat('react-hot-loader/babel')
             }
           }, {
             loader: 'coffee-loader',
@@ -123,23 +104,11 @@ module.exports = {
     ]
   },
 
-  resolve: {
-    extensions: ['.js', '.jsx', '.cjsx', '.coffee', '.sass'],
-    alias: {
-      components: resolve(__dirname, '../app/components'),
-      containers: resolve(__dirname, '../app/containers'),
-      modules: resolve(__dirname, '../app/modules'),
-      utils: resolve(__dirname, '../app/utils')
-    }
-  },
+  resolve: common.resolve,
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'index.tpl.html',
-      inject: 'body',
-      filename: 'index.html'
-    })
+    common.HtmlWebpackPlugin
   ]
 }
